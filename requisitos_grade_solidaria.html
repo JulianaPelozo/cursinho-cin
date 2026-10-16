@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grade Solidária — Requisitos e Regras de Negócio</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #263b5a;
+      --teal: #287d8e;
+      --ink: #2d3748;
+      --muted: #64748b;
+      --line: #dbe3ec;
+      --pale: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #edf2f7;
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 32px auto;
+      padding: 48px 56px;
+      background: white;
+      box-shadow: 0 8px 32px rgba(38, 59, 90, .10);
+      border-radius: 14px;
+    }
+
+    header {
+      border-bottom: 3px solid var(--teal);
+      padding-bottom: 22px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--teal);
+      font-size: .8rem;
+      letter-spacing: .12em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      color: var(--navy);
+      font-size: 2.2rem;
+      line-height: 1.15;
+      margin: .4rem 0;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--teal);
+      margin: .3rem 0 1rem;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    h2 {
+      color: var(--navy);
+      margin-top: 2.2rem;
+      padding-bottom: .35rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h3 {
+      color: var(--teal);
+      margin-top: 1.5rem;
+    }
+
+    p {
+      margin: .55rem 0 .85rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: .92rem;
+    }
+
+    th {
+      background: var(--navy);
+      color: white;
+      text-align: left;
+      font-weight: 650;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--pale);
+    }
+
+    ul,
+    ol {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin: .35rem 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      margin-top: 3rem;
+      padding-top: 1rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    @media (max-width:700px) {
+      main {
+        margin: 0;
+        padding: 26px 18px;
+        border-radius: 0;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: normal;
+      }
+
+      th,
+      td {
+        min-width: 115px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      main {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      h2,
+      h3 {
+        break-after: avoid;
+      }
+
+      table,
+      tr {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Documento de requisitos · Versão 1.0</div>
+      <h1>GRADE SOLIDÁRIA</h1>
+      <div class="subtitle">Levantamento de Requisitos e Regras de Negócio</div>
+      <div class="meta">Desafio 4 — Grade fechada, aula garantida!<br>Cliente: Rosivaldo, coordenador de cursinho
+        popular<br>16 de outubro de 2026</div>
+    </header>
+
+    <p><strong>GRADE SOLIDÁRIA</strong></p>
+    <p>Levantamento de Requisitos e Regras de Negócio</p>
+    <p><strong>Desafio 4 — Grade fechada, aula garantida!<br></strong>Cliente: Rosivaldo, coordenador de cursinho
+      popular<br>Versão 1.0 • 16 de outubro de 2026</p>
+    <h2>1. Apresentação</h2>
+    <p>Este documento registra uma proposta inicial de requisitos para um sistema de apoio à organização da grade
+      semanal de um cursinho popular. A solução deverá ajudar o coordenador a cadastrar voluntários, disciplinas e
+      disponibilidades, montar a grade, detectar conflitos, identificar aulas sem professor, buscar substitutos e
+      acompanhar a distribuição das aulas.</p>
+    <h3>1.1. Problema identificado</h3>
+    <p>Atualmente, a grade é organizada manualmente em planilhas. Esse processo consome tempo e pode gerar conflitos de
+      horário, aulas sem cobertura, dificuldade para encontrar substitutos e distribuição desigual da carga entre os
+      voluntários.</p>
+    <h3>1.2. Objetivo do sistema</h3>
+    <p>Reduzir o esforço manual do coordenador, antecipar problemas na grade, melhorar a cobertura das disciplinas e
+      apoiar uma distribuição mais equilibrada das aulas, mantendo a decisão final sob responsabilidade do coordenador.
+    </p>
+    <h3>1.3. Escopo inicial</h3>
+    <p>A primeira versão será utilizada apenas pelo coordenador. Os voluntários não terão acesso direto ao sistema. A
+      montagem automática e perfeita da grade não é requisito da primeira versão; o foco é oferecer cadastro,
+      visualização, validações e sugestões úteis.</p>
+    <h2>2. Atores</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Ator</th>
+          <th>Descrição / participação</th>
+        </tr>
+        <tr>
+          <td>Coordenador (Rosivaldo)</td>
+          <td>Usuário principal. Cadastra dados, monta e altera a grade, consulta alertas, acompanha cargas e escolhe
+            substitutos.</td>
+        </tr>
+        <tr>
+          <td>Professor voluntário</td>
+          <td>Fornece informações de disponibilidade e disciplinas que domina, mas não acessa o sistema na primeira
+            versão.</td>
+        </tr>
+        <tr>
+          <td>Estudante</td>
+          <td>Beneficiário das aulas. Não interage diretamente com o sistema.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>3. Requisitos funcionais (RF)</h2>
+    <p>Os requisitos funcionais descrevem as ações e funcionalidades que o sistema deverá oferecer.</p>
+    <h3>3.1. Cadastro e gestão</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Requisito</th>
+          <th>Descrição</th>
+        </tr>
+        <tr>
+          <td>RF01</td>
+          <td>Cadastro de voluntários</td>
+          <td>Permitir cadastrar, consultar, editar e desativar voluntários, registrando nome, contato e situação
+            (ativo/inativo).</td>
+        </tr>
+        <tr>
+          <td>RF02</td>
+          <td>Cadastro de disciplinas</td>
+          <td>Permitir cadastrar, consultar e editar disciplinas oferecidas pelo cursinho.</td>
+        </tr>
+        <tr>
+          <td>RF03</td>
+          <td>Disciplinas por voluntário</td>
+          <td>Permitir associar cada voluntário às disciplinas que está apto a ensinar.</td>
+        </tr>
+        <tr>
+          <td>RF04</td>
+          <td>Disponibilidade</td>
+          <td>Permitir registrar os dias e horários em que cada voluntário pode ministrar aulas.</td>
+        </tr>
+        <tr>
+          <td>RF05</td>
+          <td>Demanda de aulas</td>
+          <td>Permitir definir a quantidade de aulas semanais necessária para cada disciplina e, quando aplicável, a
+            duração de cada aula.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>3.2. Montagem e visualização da grade</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Requisito</th>
+          <th>Descrição</th>
+        </tr>
+        <tr>
+          <td>RF06</td>
+          <td>Montagem manual</td>
+          <td>Permitir alocar disciplina, turma, dia, horário e professor responsável em cada aula.</td>
+        </tr>
+        <tr>
+          <td>RF07</td>
+          <td>Grade semanal</td>
+          <td>Exibir a grade organizada por dia e horário, com disciplina, turma e professor.</td>
+        </tr>
+        <tr>
+          <td>RF08</td>
+          <td>Cobertura das aulas</td>
+          <td>Diferenciar visualmente aulas cobertas e aulas que ainda não possuem professor.</td>
+        </tr>
+        <tr>
+          <td>RF09</td>
+          <td>Detecção de conflitos</td>
+          <td>Identificar alocações simultâneas do mesmo voluntário e alocações incompatíveis com disponibilidade ou
+            disciplinas habilitadas.</td>
+        </tr>
+        <tr>
+          <td>RF10</td>
+          <td>Acompanhamento da demanda</td>
+          <td>Comparar a quantidade de aulas necessárias com a quantidade de aulas alocadas por disciplina.</td>
+        </tr>
+        <tr>
+          <td>RF11</td>
+          <td>Alertas</td>
+          <td>Exibir avisos sobre aulas descobertas, conflitos e cobertura insuficiente.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>3.3. Substituições e equilíbrio</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Requisito</th>
+          <th>Descrição</th>
+        </tr>
+        <tr>
+          <td>RF12</td>
+          <td>Busca de substitutos</td>
+          <td>Ao selecionar uma aula, listar voluntários ativos que dominam a disciplina e estão disponíveis no horário.
+          </td>
+        </tr>
+        <tr>
+          <td>RF13</td>
+          <td>Validação de substitutos</td>
+          <td>Verificar se o candidato já está alocado em outra aula simultânea e se atende às demais regras de
+            alocação.</td>
+        </tr>
+        <tr>
+          <td>RF14</td>
+          <td>Carga por voluntário</td>
+          <td>Exibir a quantidade de aulas atribuídas a cada voluntário.</td>
+        </tr>
+        <tr>
+          <td>RF15</td>
+          <td>Apoio ao equilíbrio</td>
+          <td>Destacar cargas potencialmente altas ou baixas considerando disponibilidade e limites definidos pelo
+            coordenador.</td>
+        </tr>
+        <tr>
+          <td>RF16</td>
+          <td>Atualização da grade</td>
+          <td>Permitir substituir professor, remover alocações e alterar aulas sem reconstruir toda a grade.</td>
+        </tr>
+        <tr>
+          <td>RF17</td>
+          <td>Histórico de alterações</td>
+          <td>Registrar alterações importantes na grade, como trocas de professor e mudanças de horário.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>3.4. Consulta e acompanhamento</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Requisito</th>
+          <th>Descrição</th>
+        </tr>
+        <tr>
+          <td>RF18</td>
+          <td>Painel de situação</td>
+          <td>Apresentar total de aulas previstas, cobertas, descobertas e com conflitos.</td>
+        </tr>
+        <tr>
+          <td>RF19</td>
+          <td>Filtros</td>
+          <td>Permitir filtrar a grade por disciplina, voluntário, turma, dia e situação da aula.</td>
+        </tr>
+        <tr>
+          <td>RF20</td>
+          <td>Exportação</td>
+          <td>Permitir exportar ou imprimir a grade semanal para consulta e compartilhamento.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>4. Requisitos não funcionais (RNF)</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Requisito</th>
+          <th>Descrição</th>
+        </tr>
+        <tr>
+          <td>RNF01</td>
+          <td>Usabilidade</td>
+          <td>A interface deverá ser simples e compreensível para um usuário sem conhecimento técnico.</td>
+        </tr>
+        <tr>
+          <td>RNF02</td>
+          <td>Integridade</td>
+          <td>O sistema deverá impedir ou sinalizar inconsistências nas alocações.</td>
+        </tr>
+        <tr>
+          <td>RNF03</td>
+          <td>Desempenho</td>
+          <td>Consultas da grade e busca de substitutos deverão responder rapidamente para o volume de dados do
+            cursinho.</td>
+        </tr>
+        <tr>
+          <td>RNF04</td>
+          <td>Segurança</td>
+          <td>O acesso administrativo deverá ser protegido por autenticação.</td>
+        </tr>
+        <tr>
+          <td>RNF05</td>
+          <td>Privacidade</td>
+          <td>Os dados pessoais dos voluntários deverão ser acessíveis somente a pessoas autorizadas.</td>
+        </tr>
+        <tr>
+          <td>RNF06</td>
+          <td>Persistência</td>
+          <td>Cadastros e alterações deverão continuar salvos após o encerramento da sessão.</td>
+        </tr>
+        <tr>
+          <td>RNF07</td>
+          <td>Compatibilidade</td>
+          <td>O sistema deverá funcionar em navegadores modernos.</td>
+        </tr>
+        <tr>
+          <td>RNF08</td>
+          <td>Manutenibilidade</td>
+          <td>O código deverá ser organizado para facilitar correções e futuras melhorias.</td>
+        </tr>
+        <tr>
+          <td>RNF09</td>
+          <td>Confiabilidade</td>
+          <td>O sistema deverá validar dados e reduzir o risco de perda de informações durante alterações.</td>
+        </tr>
+        <tr>
+          <td>RNF10</td>
+          <td>Auditabilidade</td>
+          <td>Quando o histórico for implementado, alterações importantes deverão poder ser consultadas.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>5. Regras de negócio (RN)</h2>
+    <p>As regras de negócio definem as condições que precisam ser respeitadas ao organizar e alterar a grade.</p>
+    <table>
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>Regra</th>
+        </tr>
+        <tr>
+          <td>RN01</td>
+          <td>Um voluntário só poderá ser alocado em disciplinas que domina.</td>
+        </tr>
+        <tr>
+          <td>RN02</td>
+          <td>Um voluntário só poderá ser alocado em horários nos quais declarou disponibilidade.</td>
+        </tr>
+        <tr>
+          <td>RN03</td>
+          <td>Um voluntário não poderá ministrar duas aulas simultâneas.</td>
+        </tr>
+        <tr>
+          <td>RN04</td>
+          <td>Uma aula só será considerada coberta quando houver um professor responsável associado a ela.</td>
+        </tr>
+        <tr>
+          <td>RN05</td>
+          <td>A demanda semanal de cada disciplina deverá ser definida para que a cobertura possa ser avaliada.</td>
+        </tr>
+        <tr>
+          <td>RN06</td>
+          <td>Um voluntário inativo não poderá receber novas alocações.</td>
+        </tr>
+        <tr>
+          <td>RN07</td>
+          <td>Uma substituição só poderá ser efetivada após verificar disciplina, disponibilidade e ausência de conflito
+            do candidato.</td>
+        </tr>
+        <tr>
+          <td>RN08</td>
+          <td>A carga de aulas deverá ser contabilizada por voluntário para apoiar o acompanhamento da distribuição.
+          </td>
+        </tr>
+        <tr>
+          <td>RN09</td>
+          <td>O sistema deverá diferenciar uma aula sem professor de uma aula com alocação inválida.</td>
+        </tr>
+        <tr>
+          <td>RN10</td>
+          <td>O coordenador poderá alterar a grade manualmente; as sugestões do sistema não substituirão sua decisão
+            final.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>6. Dados principais</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Entidade</th>
+          <th>Dados sugeridos</th>
+        </tr>
+        <tr>
+          <td>Voluntário</td>
+          <td>Identificador, nome, contato, situação e limite de carga horária/aulas desejado.</td>
+        </tr>
+        <tr>
+          <td>Disciplina</td>
+          <td>Identificador, nome e quantidade de aulas semanais necessárias.</td>
+        </tr>
+        <tr>
+          <td>Disponibilidade</td>
+          <td>Voluntário, dia da semana, horário inicial e horário final.</td>
+        </tr>
+        <tr>
+          <td>Turma</td>
+          <td>Identificador, nome ou código e período letivo.</td>
+        </tr>
+        <tr>
+          <td>Aula / Alocação</td>
+          <td>Turma, disciplina, dia, horário, professor responsável e situação da cobertura.</td>
+        </tr>
+        <tr>
+          <td>Associação voluntário-disciplina</td>
+          <td>Identificador do voluntário e identificador da disciplina que ele pode ministrar.</td>
+        </tr>
+        <tr>
+          <td>Histórico (opcional no MVP)</td>
+          <td>Data da alteração, alocação afetada, valor anterior e novo valor.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Observação: a demanda de uma disciplina não deve ser confundida com a quantidade de horários. Uma disciplina pode
+      exigir várias aulas semanais e atender a mais de uma turma. Recomenda-se representar cada aula como uma ocorrência
+      de horário vinculada a uma turma e a uma disciplina.</p>
+    <h2>7. Critérios de aceitação</h2>
+    <ul>
+      <li>É possível cadastrar voluntários, suas disciplinas e suas disponibilidades.</li>
+      <li>Uma tentativa de alocar o mesmo voluntário em duas aulas simultâneas é identificada como conflito.</li>
+      <li>Uma alocação em disciplina não habilitada para o voluntário é bloqueada ou claramente sinalizada.</li>
+      <li>A grade distingue visualmente aulas cobertas e aulas sem professor.</li>
+      <li>É possível comparar a demanda semanal de cada disciplina com as aulas alocadas.</li>
+      <li>Ao selecionar uma aula, o sistema apresenta candidatos a substituto que atendem às condições de alocação.</li>
+      <li>É possível consultar e comparar a quantidade de aulas atribuídas a cada voluntário.</li>
+      <li>As alterações continuam salvas após encerrar e iniciar uma nova sessão.</li>
+    </ul>
+    <h2>8. Priorização e escopo do MVP</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Prioridade</th>
+          <th>Itens sugeridos</th>
+        </tr>
+        <tr>
+          <td>Alta — primeira versão</td>
+          <td>Cadastros; disponibilidade; demanda; montagem manual; grade semanal; detecção de conflitos; aulas
+            descobertas; busca de substitutos; carga por voluntário.</td>
+        </tr>
+        <tr>
+          <td>Média — após validação</td>
+          <td>Painel com indicadores; filtros; exportação; histórico de alterações.</td>
+        </tr>
+        <tr>
+          <td>Futura evolução</td>
+          <td>Sugestão automática de alocações; otimização da distribuição; portal para voluntários informarem
+            disponibilidade.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Recomendação: não tornar a geração automática da grade um requisito obrigatório do MVP. O problema envolve
+      múltiplas restrições e pode aumentar a complexidade. A primeira entrega deve priorizar visibilidade, validação e
+      apoio à decisão do coordenador.</p>
+    <h2>9. Questões em aberto para validação com o cliente</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Tema</th>
+          <th>Pergunta</th>
+        </tr>
+        <tr>
+          <td>Organização das turmas</td>
+          <td>O cursinho possui uma turma única ou várias turmas com horários distintos?</td>
+        </tr>
+        <tr>
+          <td>Duração das aulas</td>
+          <td>As aulas têm duração fixa ou podem variar? Existem intervalos entre elas?</td>
+        </tr>
+        <tr>
+          <td>Distribuição da carga</td>
+          <td>O objetivo é dividir as aulas igualmente, respeitar limites individuais ou considerar também preferências?
+          </td>
+        </tr>
+        <tr>
+          <td>Substituição</td>
+          <td>O coordenador prefere escolher entre uma lista de candidatos ou receber uma recomendação priorizada?</td>
+        </tr>
+        <tr>
+          <td>Demanda por disciplina</td>
+          <td>A quantidade semanal será definida por disciplina no geral ou separadamente para cada turma?</td>
+        </tr>
+        <tr>
+          <td>Períodos letivos</td>
+          <td>O sistema precisará manter grades de semestres anteriores e preparar novas grades por semestre?</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2>10. Conclusão</h2>
+    <p>O sistema proposto pretende transformar a montagem da grade em um processo mais transparente e controlável. Com
+      os cadastros estruturados, as validações de conflito, a visualização de cobertura e a busca de substitutos, o
+      coordenador poderá antecipar problemas e tomar decisões com mais segurança. Os requisitos aqui descritos são uma
+      base inicial e deverão ser confirmados com o cliente antes do desenho definitivo do banco de dados, das telas e
+      dos casos de uso.</p>
+    <footer>Grade Solidária · Documento inicial de levantamento de requisitos</footer>
+  </main>
+</body>
+
+</html>

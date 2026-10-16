@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Grade Fechada - protótipo de baixa fidelidade</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font: 15px/1.4 Arial, Helvetica, sans-serif;
+            color: #222;
+            background: #fff
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .box {
+            border: 2px solid #333;
+            padding: 12px;
+            background: #fff
+        }
+
+        .dash {
+            border: 2px dashed #888
+        }
+
+        .gray {
+            background: #e6e6e6
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .between {
+            justify-content: space-between
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0
+        }
+
+        h1 {
+            font-size: 22px
+        }
+
+        h2 {
+            font-size: 18px
+        }
+
+        h3 {
+            font-size: 15px
+        }
+
+        .small {
+            font-size: 13px;
+            color: #555
+        }
+
+        .btn {
+            border: 2px solid #333;
+            background: #f2f2f2;
+            padding: 6px 12px;
+            font: inherit;
+            cursor: pointer
+        }
+
+        .btn.on {
+            background: #333;
+            color: #fff
+        }
+
+        .btn.sm {
+            padding: 3px 8px;
+            font-size: 13px
+        }
+
+        .tag {
+            display: inline-block;
+            border: 1.5px solid #333;
+            padding: 1px 6px;
+            font-size: 12px;
+            font-weight: bold
+        }
+
+        .tag.warn {
+            border-style: dashed
+        }
+
+        .tag.bad {
+            background: #333;
+            color: #fff
+        }
+
+        .bar {
+            height: 14px;
+            border: 2px solid #333;
+            background: #fff;
+            width: 100%
+        }
+
+        .bar i {
+            display: block;
+            height: 100%;
+            background: #999
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #333
+        }
+
+        .tabs button {
+            border: 2px solid #333;
+            border-bottom: 0;
+            background: #fff;
+            padding: 8px 14px;
+            font: inherit;
+            cursor: pointer;
+            margin-right: -2px
+        }
+
+        .tabs button.on {
+            background: #333;
+            color: #fff
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .screen.on {
+            display: flex
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 14px;
+            align-items: start
+        }
+
+        .note {
+            border: 1.5px dashed #888;
+            background: #f7f7f7;
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #444
+        }
+
+        .note b {
+            color: #222
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%
+        }
+
+        th,
+        td {
+            border: 1.5px solid #555;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px
+        }
+
+        th {
+            background: #e6e6e6
+        }
+
+        .wrapx {
+            overflow-x: auto
+        }
+
+        .grid {
+            min-width: 640px
+        }
+
+        .cell {
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: 0;
+            background: none;
+            font: inherit;
+            padding: 0;
+            cursor: pointer;
+            min-height: 58px
+        }
+
+        .cell .t {
+            font-size: 11px;
+            font-weight: bold;
+            display: block;
+            margin-top: 4px
+        }
+
+        td.ok {
+            background: #fff
+        }
+
+        td.warn {
+            background: #e6e6e6
+        }
+
+        td.bad {
+            background: repeating-linear-gradient(135deg, #fff 0 6px, #d4d4d4 6px 7px)
+        }
+
+        td.free {
+            border-style: dashed;
+            color: #777
+        }
+
+        input[type=text],
+        select {
+            border: 2px solid #333;
+            padding: 5px 7px;
+            font: inherit;
+            background: #fff;
+            width: 100%
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 10px
+        }
+
+        .field label,
+        .lab {
+            font-weight: bold;
+            font-size: 13px
+        }
+
+        .av {
+            display: inline-block;
+            width: 34px;
+            height: 26px;
+            border: 1.5px solid #333;
+            text-align: center;
+            font-size: 11px;
+            line-height: 24px;
+            margin: 2px
+        }
+
+        .av.on {
+            background: #999
+        }
+
+        .issue {
+            border: 1.5px solid #555;
+            padding: 7px 9px;
+            margin: 6px 0;
+            font-size: 13px
+        }
+
+        .issue .w {
+            font-size: 11px;
+            font-weight: bold;
+            color: #555
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px
+        }
+
+        .modal.on {
+            display: flex
+        }
+
+        .modal .box {
+            max-width: 460px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto
+        }
+
+        .load {
+            display: flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .load .bar {
+            width: 110px;
+            height: 10px
+        }
+
+        @media (max-width:860px) {
+            .two {
+                grid-template-columns: minmax(0, 1fr)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+
+        <div class="note"><b>Protótipo de baixa fidelidade.</b> Wireframe em cinza, sem identidade visual. Clique nas
+            abas e nas aulas da grade para navegar. Os nomes e horários são exemplos. As caixas tracejadas explicam a
+            intenção de cada área.</div>
+
+        <header class="box">
+            <div class="row between">
+                <div>
+                    <div class="small">[logo]</div>
+                    <h1>Grade Fechada</h1>
+                    <div class="small">Cursinho popular · 2 turmas · 9 voluntários ativos</div>
+                </div>
+                <div style="flex:1;min-width:260px;max-width:460px">
+                    <div class="row" style="gap:8px">
+                        <h2>69%</h2><span class="small">18 de 26 aulas garantidas por semana</span>
+                    </div>
+                    <div class="bar"><i style="width:69%"></i></div>
+                    <div class="row" style="margin-top:6px"><span class="tag bad">Conflitos 3</span><span
+                            class="tag warn">Sem professor 3</span><span class="tag warn">Aulas faltando 2</span></div>
+                </div>
+                <button class="btn">Dados e backup</button>
+            </div>
+        </header>
+
+        <nav class="tabs" id="tabs">
+            <button class="on" data-s="grade">Grade</button>
+            <button data-s="vol">Voluntários</button>
+            <button data-s="est">Disciplinas e turmas</button>
+            <button data-s="sub">Substituição</button>
+        </nav>
+
+        <section class="screen on" id="s-grade">
+            <div class="two">
+                <div class="box sub">
+                    <div class="row between" style="margin-bottom:10px">
+                        <div class="row"><button class="btn on">Turma A</button><button class="btn">Turma B</button>
+                        </div>
+                        <button class="btn">Sugerir professores para vagas</button>
+                    </div>
+                    <div class="wrapx">
+                        <table class="grid" id="gradeTable"></table>
+                    </div>
+                    <p class="small" style="margin-top:8px">Legenda: <span class="tag">OK</span> aula garantida &nbsp;
+                        <span class="tag warn">SEM PROFESSOR</span> &nbsp; <span class="tag bad">CONFLITO</span> &nbsp;
+                        tracejado = horário livre</p>
+                    <div class="note" style="margin-top:8px"><b>Intenção:</b> o coordenador vê a semana inteira de uma
+                        turma e identifica os problemas pela marcação. Clicar em uma aula abre a escolha de disciplina e
+                        professor.</div>
+                </div>
+                <aside class="box">
+                    <h2>Pendências</h2>
+                    <h3 style="margin-top:10px">Conflitos (3)</h3>
+                    <div class="issue">
+                        <div class="w">TURMA A · SEG AULA 1</div>Ana Beatriz está em duas turmas no mesmo
+                        horário.<br><button class="btn sm" style="margin-top:4px">Resolver</button>
+                    </div>
+                    <div class="issue">
+                        <div class="w">TURMA A · QUI AULA 2</div>Ana Beatriz não está disponível neste
+                        horário.<br><button class="btn sm" style="margin-top:4px">Resolver</button>
+                    </div>
+                    <h3 style="margin-top:10px">Aulas sem professor (3)</h3>
+                    <div class="issue">
+                        <div class="w">TURMA A · QUA AULA 1</div>Física: Felipe saiu do projeto.<br><button
+                            class="btn sm" style="margin-top:4px">Atribuir João Pedro</button> <button
+                            class="btn sm">Ver opções</button>
+                    </div>
+                    <div class="issue">
+                        <div class="w">TURMA B · SEX AULA 2</div>Química: ninguém disponível neste horário.
+                    </div>
+                    <h3 style="margin-top:10px">Aulas faltando (2)</h3>
+                    <div class="issue">Turma A: Filosofia pede 1 aula e tem 0.</div>
+                    <div class="note" style="margin-top:8px"><b>Intenção:</b> lista de tudo que precisa de atenção antes
+                        da aula acontecer, com atalho de ação.</div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="screen" id="s-vol">
+            <div class="box">
+                <div class="row between" style="margin-bottom:10px">
+                    <div>
+                        <h2>Voluntários</h2>
+                        <div class="small">Média de 2,3 aulas por voluntário. A marca vertical é a média.</div>
+                    </div>
+                    <button class="btn" id="btnNovo">+ Novo voluntário</button>
+                </div>
+                <div class="wrapx">
+                    <table>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Disciplinas</th>
+                            <th>Horários livres</th>
+                            <th>Aulas na semana</th>
+                        </tr>
+                        <tr>
+                            <td>Ana Beatriz Souza</td>
+                            <td>Matemática, Física</td>
+                            <td>7 de 13</td>
+                            <td>
+                                <div class="load">
+                                    <div class="bar"><i style="width:100%"></i></div>5/4 <span class="tag bad">acima do
+                                        limite</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bruno Lima</td>
+                            <td>Matemática</td>
+                            <td>6 de 13</td>
+                            <td>
+                                <div class="load">
+                                    <div class="bar"><i style="width:50%"></i></div>2/3
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Camila Rocha</td>
+                            <td>Português, Redação</td>
+                            <td>7 de 13</td>
+                            <td>
+                                <div class="load">
+                                    <div class="bar"><i style="width:20%"></i></div>1/3
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Felipe Andrade <span class="tag warn">SAIU</span></td>
+                            <td>Física, Química</td>
+                            <td>5 de 13</td>
+                            <td>
+                                <div class="load">
+                                    <div class="bar"><i style="width:20%"></i></div>1/3
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="small">... demais voluntários</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="note" style="margin-top:8px"><b>Intenção:</b> enxergar quem está sobrecarregado e quem tem
+                    folga. Clicar em uma linha abre a ficha abaixo.</div>
+            </div>
+
+            <div class="box dash" id="ficha">
+                <h2>Ficha do voluntário (abre ao clicar na linha ou em "Novo voluntário")</h2>
+                <div class="two" style="margin-top:10px">
+                    <div>
+                        <div class="field"><label>Nome</label><input type="text" value="Ana Beatriz Souza"></div>
+                        <div class="field"><span class="lab">Disciplinas que domina</span>
+                            <div class="row"><label><input type="checkbox" checked> Matemática</label><label><input
+                                        type="checkbox" checked> Física</label><label><input type="checkbox">
+                                    Química</label><label><input type="checkbox"> Português</label></div>
+                        </div>
+                        <div class="field"><label>Limite de aulas por semana</label><input type="text" value="4"
+                                style="width:80px"></div>
+                        <label><input type="checkbox"> Saiu do projeto</label>
+                    </div>
+                    <div>
+                        <span class="lab">Horários em que está livre (clique para marcar)</span>
+                        <table style="margin-top:6px">
+                            <tr>
+                                <th></th>
+                                <th>Seg</th>
+                                <th>Ter</th>
+                                <th>Qua</th>
+                                <th>Qui</th>
+                                <th>Sex</th>
+                                <th>Sáb</th>
+                            </tr>
+                            <tr>
+                                <th>A1</th>
+                                <td><span class="av on">livre</span></td>
+                                <td><span class="av"></span></td>
+                                <td><span class="av on">livre</span></td>
+                                <td><span class="av"></span></td>
+                                <td><span class="av"></span></td>
+                                <td><span class="av on">livre</span></td>
+                            </tr>
+                            <tr>
+                                <th>A2</th>
+                                <td><span class="av on">livre</span></td>
+                                <td><span class="av"></span></td>
+                                <td><span class="av on">livre</span></td>
+                                <td><span class="av"></span></td>
+                                <td><span class="av"></span></td>
+                                <td><span class="av on">livre</span></td>
+                            </tr>
+                            <tr>
+                                <th>A3</th>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="av on">livre</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen" id="s-est">
+            <div class="two" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+                <div class="box">
+                    <div class="row between" style="margin-bottom:8px">
+                        <h2>Disciplinas</h2><button class="btn sm">+ Adicionar</button>
+                    </div>
+                    <p class="small">Aulas por semana que cada disciplina precisa em cada turma.</p>
+                    <table>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Aulas por semana</th>
+                            <th>Voluntários</th>
+                        </tr>
+                        <tr>
+                            <td>Matemática</td>
+                            <td>[ 3 ]</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>Português</td>
+                            <td>[ 2 ]</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Química</td>
+                            <td>[ 1 ]</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Filosofia</td>
+                            <td>[ 1 ]</td>
+                            <td><span class="tag bad">nenhum</span></td>
+                        </tr>
+                    </table>
+                    <p class="small" style="margin-top:8px">As disciplinas pedem 13 aulas por turma e a grade tem 13
+                        horários.</p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:14px">
+                    <div class="box">
+                        <div class="row between" style="margin-bottom:8px">
+                            <h2>Turmas</h2><button class="btn sm">+ Adicionar</button>
+                        </div>
+                        <table>
+                            <tr>
+                                <td>Turma A (Enem)</td>
+                                <td><button class="btn sm">Remover</button></td>
+                            </tr>
+                            <tr>
+                                <td>Turma B (Vestibular)</td>
+                                <td><button class="btn sm">Remover</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="box">
+                        <div class="row between" style="margin-bottom:8px">
+                            <h2>Horários das aulas</h2>
+                            <div class="row"><button class="btn sm">+ Linha</button><button class="btn sm">-
+                                    Linha</button></div>
+                        </div>
+                        <p class="small">Deixe em branco onde não há aula.</p>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>Seg a Sex</th>
+                                <th>Sáb</th>
+                            </tr>
+                            <tr>
+                                <th>Aula 1</th>
+                                <td>[ 19:00 às 20:30 ]</td>
+                                <td>[ 08:00 às 09:30 ]</td>
+                            </tr>
+                            <tr>
+                                <th>Aula 2</th>
+                                <td>[ 20:40 às 22:10 ]</td>
+                                <td>[ 09:40 às 11:10 ]</td>
+                            </tr>
+                            <tr>
+                                <th>Aula 3</th>
+                                <td>[ vazio ]</td>
+                                <td>[ 11:20 às 12:50 ]</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="note"><b>Intenção:</b> configuração feita uma vez por semestre. O aviso de capacidade mostra
+                cedo se as disciplinas não cabem na grade.</div>
+        </section>
+
+        <section class="screen" id="s-sub">
+            <div class="two">
+                <div class="box">
+                    <div class="row between" style="margin-bottom:10px">
+                        <div class="field" style="margin:0;min-width:260px"><label>Quem vai sair ou já
+                                saiu</label><select>
+                                <option>Felipe Andrade (saiu) · 1 aula</option>
+                                <option>Ana Beatriz Souza · 5 aulas</option>
+                            </select></div>
+                        <button class="btn">Registrar saída</button>
+                    </div>
+                    <p class="small" style="margin-bottom:8px">Felipe saiu do projeto. As aulas abaixo estão sem
+                        professor até alguém assumir.</p>
+                    <div class="wrapx">
+                        <table>
+                            <tr>
+                                <th>Turma</th>
+                                <th>Horário</th>
+                                <th>Disciplina</th>
+                                <th>Quem pode assumir</th>
+                            </tr>
+                            <tr>
+                                <td>Turma A</td>
+                                <td>Qua aula 1<br><span class="small">19:00 às 20:30</span></td>
+                                <td><b>Física</b></td>
+                                <td><button class="btn sm">João Pedro 2/3</button> <button class="btn sm">Ana Beatriz
+                                        5/4 !</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <p class="small" style="margin-top:8px">Só aparecem voluntários ativos que lecionam a disciplina,
+                        estão livres no horário e não têm aula em outra turma ao mesmo tempo.</p>
+                    <div class="note" style="margin-top:8px"><b>Intenção:</b> substituir o "mandar mensagem para todo
+                        mundo". O coordenador vê só quem realmente pode assumir, ordenado pela menor carga.</div>
+                </div>
+                <aside class="box">
+                    <h2>Quem cobre mais aulas</h2>
+                    <div class="issue">
+                        <div class="row between"><b>João Pedro Santos</b><span class="tag">cobre 1 de 1</span></div>
+                        <span class="small">Carga: 2 → 3 (limite 3)</span><br><button class="btn sm"
+                            style="margin-top:4px">Assumir 1 aula</button>
+                    </div>
+                    <div class="issue">
+                        <div class="row between"><b>Ana Beatriz Souza</b><span class="tag">cobre 1 de 1</span></div>
+                        <span class="small">Carga: 5 → 6 (limite 4)</span><br><b class="small">Passaria do limite de
+                            aulas.</b><br><button class="btn sm" style="margin-top:4px">Assumir 1 aula</button>
+                    </div>
+                    <div class="note" style="margin-top:8px"><b>Intenção:</b> quando a pessoa que sai tem várias aulas,
+                        mostra quem consegue ficar com o maior número delas.</div>
+                </aside>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODAL: editar aula -->
+    <div class="modal" id="modal">
+        <div class="box">
+            <div class="row between">
+                <div>
+                    <div class="small" id="mTurma">TURMA A</div>
+                    <h2 id="mTitulo">Segunda, aula 1 (19:00 às 20:30)</h2>
+                </div><button class="btn sm" id="mFechar">Fechar</button>
+            </div>
+            <div class="field" style="margin-top:12px"><label>Disciplina</label><select>
+                    <option>Matemática (3 de 3 na turma)</option>
+                    <option>Física (2 de 2 na turma)</option>
+                    <option>Nenhuma aula (horário livre)</option>
+                </select></div>
+            <div class="lab" style="margin-bottom:6px">Professor</div>
+            <div class="issue"><b>Deixar sem professor</b></div>
+            <div class="issue"><b>Bruno Lima</b><br><span class="small">Disponível · 2 aulas na semana</span></div>
+            <div class="issue"><b>João Pedro Santos</b><br><span class="small">Disponível, mas passaria do limite de 3
+                    aulas</span></div>
+            <div class="issue" style="background:#e6e6e6"><b>Ana Beatriz Souza</b><br><span class="small">Já tem aula na
+                    Turma B neste horário</span></div>
+            <div class="issue" style="background:#e6e6e6"><b>Camila Rocha</b><br><span class="small">Não leciona
+                    Matemática</span></div>
+            <div class="note"><b>Intenção:</b> os disponíveis aparecem primeiro. Quem não pode aparece com o motivo,
+                para o coordenador decidir com informação.</div>
+        </div>
+    </div>
+
+    <script>
+        var rows = [
+            [['Matemática', 'Ana B.', 'bad', 'CONFLITO'], ['Biologia', 'Elisa F.', 'ok', 'OK'], ['Física', 'Felipe A.', 'warn', 'SEM PROFESSOR'], ['Português', 'Gabriela N.', 'ok', 'OK'], ['História', 'Henrique A.', 'ok', 'OK'], ['Redação', 'Gabriela N.', 'ok', 'OK']],
+            [['Português', 'Camila R.', 'ok', 'OK'], ['Matemática', 'Bruno L.', 'ok', 'OK'], ['Química', 'Elisa F.', 'ok', 'OK'], ['Matemática', 'Ana B.', 'bad', 'CONFLITO'], ['Geografia', '-', 'warn', 'SEM PROFESSOR'], ['Física', 'Ana B.', 'ok', 'OK']],
+            [null, null, null, null, null, ['', '', 'free', 'Livre']]
+        ];
+        var dias = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        var h = '<tr><th style="width:70px"></th>' + dias.map(function (d) { return '<th>' + d + '</th>' }).join('') + '</tr>';
+        rows.forEach(function (r, i) {
+            h += '<tr><th>Aula ' + (i + 1) + '</th>';
+            r.forEach(function (c, j) {
+                if (!c) { h += '<td class="free" style="text-align:center">sem aula</td>'; return }
+                if (c[2] === 'free') { h += '<td class="free"><button class="cell" data-d="' + j + '" data-a="' + i + '">Livre<span class="t">+ definir aula</span></button></td>'; return }
+                h += '<td class="' + c[2] + '"><button class="cell" data-d="' + j + '" data-a="' + i + '"><b>' + c[0] + '</b><br>' + c[1] + '<span class="t">' + c[3] + '</span></button></td>';
+            });
+            h += '</tr>';
+        });
+        document.getElementById('gradeTable').innerHTML = h;
+
+        var tabs = document.querySelectorAll('#tabs button');
+        function show(s) {
+            tabs.forEach(function (b) { b.classList.toggle('on', b.dataset.s === s) });
+            document.querySelectorAll('.screen').forEach(function (e) { e.classList.toggle('on', e.id === 's-' + s) });
+        }
+        tabs.forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.s) }) });
+        var modal = document.getElementById('modal');
+        document.getElementById('gradeTable').addEventListener('click', function (e) {
+            var b = e.target.closest('.cell'); if (!b) return;
+            document.getElementById('mTitulo').textContent = dias[b.dataset.d] + ', aula ' + (Number(b.dataset.a) + 1);
+            modal.classList.add('on');
+        });
+        document.getElementById('mFechar').addEventListener('click', function () { modal.classList.remove('on') });
+        modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('on') });
+        document.getElementById('btnNovo').addEventListener('click', function () { document.getElementById('ficha').scrollIntoView({ behavior: 'smooth' }) });
+    </script>
+</body>
+
+</html>

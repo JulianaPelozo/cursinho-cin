@@ -1,0 +1,15 @@
+{
+  "name": "grade-solidaria",
+  "version": "1.0.0",
+  "description": "Grade Solidária — organização da grade semanal de um cursinho popular",
+  "private": true,
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --no-warnings server.js",
+    "dev": "node --no-warnings --watch server.js",
+    "reset": "node --no-warnings reset.js"
+  }
+}
