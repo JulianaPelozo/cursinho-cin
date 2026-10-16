@@ -1,5 +1,4 @@
 'use strict';
-// Apaga o banco e recria com os dados de demonstração.
 const fs = require('node:fs');
 const { abrir, ARQUIVO } = require('./db');
 
