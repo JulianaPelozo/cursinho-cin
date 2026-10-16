@@ -21,7 +21,7 @@ class ErroHttp extends Error {
   }
 }
 
-// ---------------------------------------------------------------- validação
+
 function texto(valor, campo, { obrigatorio = false, max = 120 } = {}) {
   if (valor == null || String(valor).trim() === '') {
     if (obrigatorio) throw new ErroHttp(400, `Informe ${campo}.`);
@@ -60,7 +60,7 @@ function buscar(tabela, id, nome) {
   return { ...linha };
 }
 
-// ---------------------------------------------------------------- histórico
+
 function registrar(usuario, tipo, descricao, { aulaId = null, antes = null, depois = null } = {}) {
   db.prepare('INSERT INTO historico (usuario, tipo, aula_id, descricao, valor_anterior, valor_novo) VALUES (?, ?, ?, ?, ?, ?)')
     .run(usuario?.nome ?? null, tipo, aulaId, descricao, antes, depois);
@@ -70,7 +70,7 @@ const localAula = (ctx, a) => `${ctx.turma.get(a.turma_id).nome} · ${ctx.hor.ge
 const valorAula = (ctx, disciplinaId, voluntarioId) =>
   `${ctx.disc.get(disciplinaId).nome} · ${voluntarioId ? ctx.vol.get(voluntarioId).nome : 'sem professor'}`;
 
-// ---------------------------------------------------------------- sessão
+
 function lerCookies(req) {
   return Object.fromEntries((req.headers.cookie || '').split(';').filter(Boolean).map((par) => {
     const i = par.indexOf('=');
@@ -87,7 +87,7 @@ function usuarioDaSessao(req) {
   return linha ? { ...linha, token } : null;
 }
 
-const tentativasLogin = new Map(); // ip -> { n, desde }
+const tentativasLogin = new Map(); 
 function limitarTentativas(ip) {
   const agora = Date.now();
   const t = tentativasLogin.get(ip);
@@ -95,7 +95,7 @@ function limitarTentativas(ip) {
   if (++t.n > 8) throw new ErroHttp(429, 'Muitas tentativas. Aguarde um minuto e tente de novo.');
 }
 
-// ---------------------------------------------------------------- rotas
+
 const rotas = [];
 function rota(metodo, padrao, handler, { publica = false } = {}) {
   const chaves = [];
@@ -103,7 +103,6 @@ function rota(metodo, padrao, handler, { publica = false } = {}) {
   rotas.push({ metodo, re, chaves, handler, publica });
 }
 
-// Autenticação (RNF04)
 rota('POST', '/api/login', ({ req, res, corpo }) => {
   limitarTentativas(req.socket.remoteAddress);
   const login = texto(corpo.login, 'o usuário', { obrigatorio: true, max: 60 });
@@ -124,10 +123,8 @@ rota('POST', '/api/logout', ({ res, usuario }) => {
 
 rota('GET', '/api/me', ({ usuario }) => ({ id: usuario.id, login: usuario.login, nome: usuario.nome, cargo: usuario.cargo }));
 
-// Estado consolidado: cadastros, grade, status de cada aula, alertas e indicadores.
 rota('GET', '/api/estado', () => regras.montarEstado(regras.carregar(db)));
 
-// ---- Voluntários (RF01, RF03, RF04)
 function dadosVoluntario(corpo) {
   const email = texto(corpo.email, 'e-mail', { max: 120 });
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new ErroHttp(400, 'E-mail inválido.');
