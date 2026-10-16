@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Substituições · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <div id="cabecalho"></div>
+
+            <!-- Substituição de uma aula (RF12, RF13, RN07) -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-space-lg items-start">
+                <section class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col gap-space-sm">
+                        <div class="flex items-center gap-space-xs"><span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">PASSO 1</span>
+                            <span class="font-title-md text-title-md text-primary font-semibold">Escolha a aula</span></div>
+                        <label class="flex items-center bg-surface-container-lowest rounded-lg px-space-sm py-1">
+                            <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Mostrar:</span>
+                            <select id="fTurma" class="flex-1 bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select>
+                        </label>
+                    </div>
+                    <div id="listaAulas" class="p-space-sm flex flex-col gap-1 max-h-[560px] overflow-y-auto"></div>
+                </section>
+
+                <section class="lg:col-span-3 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex items-center gap-space-xs">
+                        <span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">PASSO 2</span>
+                        <span class="font-title-md text-title-md text-primary font-semibold">Quem pode assumir</span>
+                    </div>
+                    <div id="painelAula" class="p-space-lg flex flex-col gap-space-md"></div>
+                </section>
+            </div>
+
+            <!-- Saída / redistribuição de um voluntário -->
+            <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+                    <div class="flex flex-col">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Quem vai sair ou precisa de alívio na carga?</span>
+                        <span class="font-body-sm text-body-sm text-on-surface-variant">Veja todas as aulas da pessoa e quem pode assumir cada uma, em vez de mandar mensagem para todo mundo.</span>
+                    </div>
+                    <label class="flex items-center bg-surface-container-lowest rounded-lg px-space-sm py-1">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Voluntário:</span>
+                        <select id="fVol" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select>
+                    </label>
+                </div>
+                <div id="painelSaida" class="p-space-lg"></div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const { esc, cls, $, $$, api, DIAS } = App;
+        let aulaSel = Number(App.params.get('aula')) || null;
+        let volSel = Number(App.params.get('voluntario')) || null;
+
+        function render(e) {
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'MÓDULO 06 • SUBSTITUIÇÕES',
+                titulo: 'Substituições Inteligentes',
+                descricao: 'Selecione uma aula e veja somente voluntários ativos que dominam a disciplina, estão livres no horário e não têm outra aula simultânea (RN07).',
+            });
+
+            const fT = $('#fTurma');
+            const atualT = fT.value || 'pendentes';
+            fT.innerHTML = `<option value="pendentes">Aulas com pendência (todas as turmas)</option>${e.turmas.map((t) => `<option value="${t.id}">Todas as aulas — ${esc(t.nome)}</option>`).join('')}`;
+            fT.value = atualT;
+            if (!fT.value) fT.value = 'pendentes';
+
+            const fV = $('#fVol');
+            const comAulas = e.voluntarios.filter((v) => v.carga > 0);
+            fV.innerHTML = `<option value="">Selecione…</option>${comAulas.map((v) => `<option value="${v.id}">${esc(v.nome)} · ${v.carga} aula(s)${v.ativo ? '' : ' (inativo)'}${v.situacao_carga === 'acima' ? ' ⚠' : ''}</option>`).join('')}`;
+            if (!comAulas.some((v) => v.id === volSel)) volSel = null;
+            fV.value = volSel ?? '';
+
+            if (aulaSel && !e.mapa.aula.has(aulaSel)) aulaSel = null;
+            if (aulaSel && fT.value === 'pendentes' && e.mapa.aula.get(aulaSel).status === 'coberta') fT.value = String(e.mapa.aula.get(aulaSel).turma_id);
+            renderLista();
+            renderAula();
+            renderSaida();
+        }
+
+        const ordenar = (e) => (a, b) => {
+            const ha = e.mapa.hor.get(a.horario_id), hb = e.mapa.hor.get(b.horario_id);
+            return ha.dia - hb.dia || ha.inicio.localeCompare(hb.inicio) || a.turma_id - b.turma_id;
+        };
+
+        function renderLista() {
+            const e = App.estado;
+            const f = $('#fTurma').value;
+            const lista = e.aulas.filter((a) => (f === 'pendentes' ? a.status !== 'coberta' : a.turma_id === Number(f))).sort(ordenar(e));
+            if (!aulaSel && lista.length) aulaSel = lista[0].id;
+            $('#listaAulas').innerHTML = lista.map((a) => {
+                const s = App.STATUS[a.status];
+                const h = e.mapa.hor.get(a.horario_id);
+                const v = a.voluntario_id ? e.mapa.vol.get(a.voluntario_id) : null;
+                const sel = a.id === aulaSel;
+                return `<button type="button" data-aula="${a.id}" class="text-left p-space-sm rounded-lg border-l-4 ${s.borda} transition-all ${sel ? 'bg-primary-fixed/40 ring-1 ring-primary' : 'hover:bg-surface-container-low'} flex items-center justify-between gap-space-sm">
+                    <div class="flex flex-col min-w-0">
+                        <span class="font-code-sm text-code-sm text-on-surface-variant">${esc(e.mapa.turma.get(a.turma_id).nome)} · ${DIAS[h.dia]} ${h.inicio}</span>
+                        <span class="font-title-md text-title-md text-on-surface truncate">${esc(e.mapa.disc.get(a.disciplina_id).nome)}</span>
+                        <span class="font-body-sm text-body-sm ${v ? 'text-on-surface-variant' : 'text-warning font-semibold'} truncate">${v ? esc(v.nome) : 'Sem professor'}</span>
+                    </div>${a.status === 'coberta' ? '' : App.chipStatus(a.status)}</button>`;
+            }).join('') || App.vazio('Nenhuma aula pendente. Use o filtro para escolher qualquer aula da grade.');
+        }
+
+        async function renderAula() {
+            const e = App.estado;
+            const box = $('#painelAula');
+            const a = e.mapa.aula.get(aulaSel);
+            if (!a) {
+                box.innerHTML = App.vazio('Escolha uma aula à esquerda.', 'touch_app');
+                return;
+            }
+            const atual = a.voluntario_id ? e.mapa.vol.get(a.voluntario_id) : null;
+            const disc = e.mapa.disc.get(a.disciplina_id);
+            box.innerHTML = `
+                <div class="flex items-start justify-between gap-space-md flex-wrap">
+                    <div class="flex flex-col">
+                        <span class="font-code-sm text-code-sm text-on-surface-variant uppercase">${esc(App.localAula(e, a))}</span>
+                        <span class="font-headline-md text-headline-md text-on-surface">${esc(disc.nome)}</span>
+                        <span class="font-body-md text-body-md text-on-surface-variant">Professor atual: <strong>${atual ? esc(atual.nome) : 'nenhum'}</strong></span>
+                    </div>${App.chipStatus(a.status)}
+                </div>
+                ${App.listaProblemas(a.problemas)}
+                <div id="cands" class="flex flex-col gap-space-xs"><p class="font-body-sm text-body-sm text-on-surface-variant">Verificando disciplina, disponibilidade e conflitos…</p></div>`;
+            try {
+                const lista = await api('GET', `/api/candidatos?aula_id=${a.id}`);
+                if (aulaSel !== a.id) return;
+                const podem = lista.filter((c) => c.elegivel && !c.atual);
+                const naoPodem = lista.filter((c) => !c.elegivel && !c.atual && c.ativo);
+                $('#cands').innerHTML = `
+                    <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">${podem.length} pessoa(s) podem assumir · ordenadas pela menor carga</span>
+                    ${podem.length ? podem.map((c, i) => `
+                        <div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between gap-space-md flex-wrap">
+                            <div class="flex items-center gap-space-sm">
+                                ${App.avatar(e.mapa.vol.get(c.id), 'w-9 h-9')}
+                                <div class="flex flex-col">
+                                    <div class="flex items-center gap-space-xs flex-wrap"><span class="font-title-md text-title-md">${esc(c.nome)}</span>
+                                        ${i === 0 && !c.avisos.length ? '<span class="px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-label-sm text-label-sm">Recomendado</span>' : ''}</div>
+                                    <span class="font-label-sm text-label-sm text-on-surface-variant">Carga: ${c.carga} → ${c.carga_final} (limite ${c.limite_aulas})</span>
+                                    ${App.listaProblemas(c.avisos, 'aviso')}
+                                </div>
+                            </div>
+                            <button type="button" data-subst="${c.id}" class="${cls.btnPrim} !py-1.5"><span class="material-symbols-outlined text-[18px]">swap_horiz</span>Efetivar</button>
+                        </div>`).join('')
+                    : `<div class="p-space-md rounded-lg bg-warning-container/50 text-on-warning-container font-body-md text-body-md">
+                        Ninguém atende a todas as regras para esta aula. Tente mover a aula para outro horário na <a class="underline font-semibold" href="grade.html?aula=${a.id}">grade</a> ou atualizar a disponibilidade dos voluntários.</div>`}
+                    ${naoPodem.length ? `<details class="group mt-space-sm"><summary class="cursor-pointer list-none flex items-center gap-1 font-label-md text-label-md text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px] group-open:rotate-90 transition-transform">chevron_right</span>Ver quem não pode e por quê (${naoPodem.length})</summary>
+                        <div class="flex flex-col gap-1 mt-space-xs">${naoPodem.map((c) => `<div class="p-space-sm rounded-lg bg-surface-container-low/60 flex flex-col gap-0.5">
+                            <span class="font-title-md text-title-md text-on-surface-variant">${esc(c.nome)}</span>${App.listaProblemas(c.impedimentos)}</div>`).join('')}</div></details>` : ''}`;
+            } catch (erro) {
+                $('#cands').innerHTML = `<p class="text-error">${esc(erro.message)}</p>`;
+            }
+        }
+
+        async function efetivar(aulaId, volId, botao) {
+            const e = App.estado;
+            const a = e.mapa.aula.get(aulaId), v = e.mapa.vol.get(volId);
+            const atual = a.voluntario_id ? e.mapa.vol.get(a.voluntario_id).nome : 'ninguém';
+            const ok = await App.confirmar({
+                titulo: 'Efetivar substituição?', icone: 'swap_horiz', confirmar: 'Efetivar',
+                mensagem: `<strong>${esc(e.mapa.disc.get(a.disciplina_id).nome)}</strong> em ${esc(App.localAula(e, a))}<br>${esc(atual)} → <strong>${esc(v.nome)}</strong><br><span class="font-body-sm text-body-sm">O sistema confere as regras novamente antes de salvar e registra a troca no histórico.</span>`,
+            });
+            if (!ok) return;
+            await App.acao(botao, async () => {
+                const r = await api('POST', `/api/aulas/${aulaId}/substituir`, { voluntario_id: volId });
+                await App.recarregar();
+                App.toast(r.avisos.length ? `Substituição feita. Atenção: ${r.avisos[0].msg}` : `${v.nome} assumiu a aula.`, r.avisos.length ? 'aviso' : 'ok');
+            });
+        }
+
+        async function renderSaida() {
+            const e = App.estado;
+            const box = $('#painelSaida');
+            const v = e.mapa.vol.get(volSel);
+            if (!v) {
+                box.innerHTML = App.vazio('Escolha um voluntário para planejar a redistribuição das aulas.', 'group_remove');
+                return;
+            }
+            const aulas = e.aulas.filter((a) => a.voluntario_id === v.id).sort(ordenar(e));
+            if (!aulas.length) {
+                box.innerHTML = App.vazio(`${v.nome} não tem aulas na grade.`);
+                return;
+            }
+            box.innerHTML = '<p class="font-body-sm text-body-sm text-on-surface-variant">Buscando candidatos para cada aula…</p>';
+            const cands = await Promise.all(aulas.map((a) => api('GET', `/api/candidatos?aula_id=${a.id}`).then((l) => l.filter((c) => c.elegivel && !c.atual))));
+            if (volSel !== v.id) return;
+
+            const cobre = new Map();
+            cands.forEach((lista) => lista.forEach((c) => cobre.set(c.id, (cobre.get(c.id) || 0) + 1)));
+            const ranking = [...cobre.entries()].map(([id, n]) => ({ v: e.mapa.vol.get(id), n })).sort((a, b) => b.n - a.n || a.v.carga - b.v.carga).slice(0, 5);
+
+            box.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-lg">
+                    <div class="flex items-center gap-space-sm">${App.avatar(v)}
+                        <div class="flex flex-col"><span class="font-headline-sm text-headline-sm">${esc(v.nome)}</span>
+                            <span class="font-body-sm text-body-sm text-on-surface-variant">${esc([v.telefone, v.email].filter(Boolean).join(' · '))}</span></div>
+                        <div class="ml-space-md">${App.barraCarga(v)}</div>
+                    </div>
+                    ${v.ativo ? `<button type="button" id="btnSaida" class="${cls.btnNeutro} !text-error"><span class="material-symbols-outlined text-[18px]">logout</span>Registrar saída do projeto</button>` : ''}
+                </div>
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-space-lg">
+                    <div class="xl:col-span-2 overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead><tr class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                                <th class="${cls.th}">Aula</th><th class="${cls.th}">Quem pode assumir</th></tr></thead>
+                            <tbody class="divide-y divide-surface-container">
+                            ${aulas.map((a, i) => `<tr>
+                                <td class="py-space-sm px-space-md align-top"><div class="flex flex-col">
+                                    <span class="font-title-md text-title-md">${esc(e.mapa.disc.get(a.disciplina_id).nome)}</span>
+                                    <span class="font-code-sm text-code-sm text-on-surface-variant">${esc(App.localAula(e, a))}</span>
+                                    ${a.status !== 'coberta' ? `<span class="mt-1">${App.chipStatus(a.status)}</span>` : ''}</div></td>
+                                <td class="py-space-sm px-space-md"><div class="flex flex-wrap gap-space-xs">
+                                    ${cands[i].length ? cands[i].slice(0, 4).map((c) => `<button type="button" data-subst-aula="${a.id}" data-subst="${c.id}"
+                                        class="inline-flex items-center gap-1 px-space-sm py-1 rounded-lg ${c.avisos.length ? 'bg-warning-container/60' : 'bg-primary-fixed/50'} hover:ring-2 hover:ring-primary font-label-md text-label-md" title="${esc(c.avisos.map((x) => x.msg).join('; ') || 'Clique para efetivar')}">
+                                        ${esc(c.nome.split(' ').slice(0, 2).join(' '))} <span class="font-code-sm text-code-sm text-on-surface-variant">${c.carga}/${c.limite_aulas}</span>${c.avisos.length ? '<span class="material-symbols-outlined text-[14px] text-warning">warning</span>' : ''}</button>`).join('')
+                                    : '<span class="font-body-sm text-body-sm text-error">Ninguém disponível — reveja horário ou disponibilidades.</span>'}
+                                </div></td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex flex-col gap-space-sm p-space-md bg-surface-container-low rounded-xl self-start">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Quem cobre mais aulas</span>
+                        ${ranking.length ? ranking.map((r) => `<div class="flex items-center justify-between gap-space-sm p-space-sm bg-surface-container-lowest rounded-lg">
+                            <div class="flex flex-col"><span class="font-title-md text-title-md">${esc(r.v.nome)}</span>
+                                <span class="font-label-sm text-label-sm text-on-surface-variant">Carga ${r.v.carga} → ${r.v.carga + r.n} (limite ${r.v.limite_aulas})</span></div>
+                            <span class="px-2 py-0.5 rounded-full ${r.v.carga + r.n > r.v.limite_aulas ? 'bg-warning-container text-on-warning-container' : 'bg-primary-fixed text-primary'} font-label-md text-label-md font-semibold whitespace-nowrap">cobre ${r.n} de ${aulas.length}</span>
+                        </div>`).join('') : '<span class="font-body-sm text-body-sm text-on-surface-variant">Nenhum candidato encontrado.</span>'}
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Contagem independente por aula: duas aulas no mesmo horário não podem ir para a mesma pessoa.</span>
+                    </div>
+                </div>`;
+
+            $('#btnSaida', box)?.addEventListener('click', async (ev) => {
+                const ok = await App.confirmar({
+                    titulo: `Registrar saída de ${v.nome}?`, perigo: true, icone: 'logout', confirmar: 'Registrar saída',
+                    mensagem: `A pessoa ficará <strong>inativa</strong> (RN06) e as <strong>${aulas.length} aula(s)</strong> ficarão sem professor, prontas para substituição. Tudo fica no histórico.`,
+                });
+                if (!ok) return;
+                await App.acao(ev.currentTarget, async () => {
+                    await api('PATCH', `/api/voluntarios/${v.id}/situacao`, { ativo: false, liberar_aulas: true, motivo: 'saiu do projeto' });
+                    $('#fTurma').value = 'pendentes';
+                    aulaSel = null;
+                    await App.recarregar();
+                    App.toast(`Saída registrada. ${aulas.length} aula(s) aguardam substituto.`, 'aviso');
+                });
+            });
+        }
+
+        $('#fTurma').addEventListener('input', () => { aulaSel = null; renderLista(); renderAula(); });
+        $('#fVol').addEventListener('input', (ev) => {
+            volSel = Number(ev.target.value) || null;
+            history.replaceState(null, '', volSel ? `?voluntario=${volSel}` : location.pathname);
+            renderSaida();
+        });
+        $('#listaAulas').addEventListener('click', (ev) => {
+            const b = ev.target.closest('[data-aula]');
+            if (!b) return;
+            aulaSel = Number(b.dataset.aula);
+            renderLista();
+            renderAula();
+        });
+        document.addEventListener('click', (ev) => {
+            const b = ev.target.closest('[data-subst]');
+            if (!b) return;
+            efetivar(Number(b.dataset.substAula || aulaSel), Number(b.dataset.subst), b);
+        });
+
+        App.start({ ativo: 'substituicoes.html', render });
+    </script>
+</body>
+
+</html>

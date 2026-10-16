@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Montagem da Grade · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <div id="cabecalho"></div>
+
+            <!-- Turmas + filtros (RF19) -->
+            <section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-md">
+                <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md">
+                    <div id="abasTurma" class="flex items-center gap-space-xs flex-wrap" role="tablist" aria-label="Turmas"></div>
+                    <div class="flex items-center flex-wrap gap-space-sm">
+                        <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1"><span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Disciplina:</span>
+                            <select id="fDisc" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer max-w-[160px]"></select></label>
+                        <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1"><span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Voluntário:</span>
+                            <select id="fVol" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer max-w-[160px]"></select></label>
+                        <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1"><span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Dia:</span>
+                            <select id="fDia" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select></label>
+                        <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1"><span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Situação:</span>
+                            <select id="fSit" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer">
+                                <option value="todas">Todas</option>
+                                <option value="coberta">Cobertas</option>
+                                <option value="descoberta">Sem professor</option>
+                                <option value="conflito">Com conflito</option>
+                                <option value="livre">Horários livres</option>
+                            </select></label>
+                        <button id="limpar" type="button" title="Limpar filtros" class="p-2 text-on-surface-variant hover:text-on-surface rounded-lg hover:bg-surface-container transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">filter_alt_off</span></button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 xl:grid-cols-4 gap-space-lg items-start">
+                <!-- Grade semanal (RF07, RF08) -->
+                <section class="xl:col-span-3 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+                        <div class="flex items-center gap-space-xs flex-wrap">
+                            <span id="tituloTurma" class="font-title-md text-title-md text-primary font-semibold"></span>
+                            <span id="resumoTurma" class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm font-semibold"></span>
+                        </div>
+                        <div class="flex items-center gap-space-md flex-wrap font-body-sm text-body-sm text-on-surface-variant">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>Aula garantida</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-warning"></span>Sem professor</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-error"></span>Conflito</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded border border-dashed border-outline"></span>Livre</span>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto p-space-md">
+                        <div id="grade" class="min-w-[760px]"></div>
+                    </div>
+                </section>
+
+                <!-- Pendências da turma (RF11) -->
+                <aside class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Pendências da turma</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[20px]">checklist</span>
+                    </div>
+                    <div id="pendencias" class="p-space-md flex flex-col gap-space-md max-h-[640px] overflow-y-auto"></div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const { esc, cls, $, $$, api, DIAS, DIAS_LONGOS } = App;
+        let turmaSel = Number(App.params.get('turma')) || null;
+
+        function render(e) {
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'MÓDULO 04 • GRADE SEMANAL',
+                titulo: 'Montagem da Grade',
+                descricao: 'Clique em um horário para alocar disciplina e professor. O sistema mostra quem pode assumir e avisa sobre conflitos, mas a decisão final é sua (RN10).',
+                acoes: `<a href="conflitos.html" class="${cls.btnSec}"><span class="material-symbols-outlined text-[18px] text-error">warning</span>Pendências (${e.indicadores.conflitos + e.indicadores.descobertas})</a>
+                    <a href="exportar.html" class="${cls.btnSec}"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">print</span>Imprimir / exportar</a>`,
+            });
+            if (!e.turmas.length) {
+                $('#grade').innerHTML = App.vazio('Nenhuma turma cadastrada. Crie uma turma em Turmas & Horários.', 'meeting_room');
+                $('#abasTurma').innerHTML = `<a href="turmas.html" class="${cls.btnPrim}">Cadastrar turma</a>`;
+                return;
+            }
+            if (!e.mapa.turma.has(turmaSel)) turmaSel = e.turmas[0].id;
+
+            $('#abasTurma').innerHTML = e.turmas.map((t) => {
+                const ativa = t.id === turmaSel;
+                const pend = t.conflitos + t.descobertas;
+                return `<button type="button" role="tab" aria-selected="${ativa}" data-turma="${t.id}"
+                    class="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-title-md text-title-md transition-all ${ativa ? 'bg-primary-container text-on-primary shadow-md' : 'bg-surface-container-low text-on-surface hover:bg-surface-container'}">
+                    ${esc(t.nome)}${t.descricao ? `<span class="font-label-sm text-label-sm ${ativa ? 'text-on-primary-container' : 'text-on-surface-variant'}">${esc(t.descricao)}</span>` : ''}
+                    ${pend ? `<span class="min-w-[20px] h-5 px-1 rounded-full bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center">${pend}</span>` : ''}
+                </button>`;
+            }).join('');
+
+            const preservar = (sel, html, padrao) => { const el = $(sel); const v = el.value || padrao; el.innerHTML = html; el.value = v; if (!el.value) el.value = padrao; };
+            preservar('#fDisc', '<option value="todas">Todas</option>' + App.opcoes(e.disciplinas), 'todas');
+            preservar('#fVol', '<option value="todos">Todos</option>' + App.opcoes(e.voluntarios), 'todos');
+            preservar('#fDia', '<option value="todos">Todos</option>' + App.estrutura(e).dias.map((d) => `<option value="${d}">${DIAS_LONGOS[d]}</option>`).join(''), 'todos');
+            renderGrade();
+        }
+
+        function casaFiltro(a) {
+            const d = $('#fDisc').value, v = $('#fVol').value, s = $('#fSit').value;
+            if (!a) return s === 'todas' || s === 'livre' ? (d === 'todas' && v === 'todos') : false;
+            return (d === 'todas' || a.disciplina_id === Number(d)) && (v === 'todos' || a.voluntario_id === Number(v)) && (s === 'todas' || a.status === s);
+        }
+
+        function renderGrade() {
+            const e = App.estado;
+            const t = e.mapa.turma.get(turmaSel);
+            const { dias, linhas, celula } = App.estrutura(e);
+            const fDia = $('#fDia').value;
+            const diasVis = fDia === 'todos' ? dias : dias.filter((d) => d === Number(fDia));
+            $('#tituloTurma').textContent = `${t.nome} · ${t.periodo}`;
+            $('#resumoTurma').textContent = `${t.cobertas} de ${t.demanda} aulas garantidas`;
+
+            if (!e.horarios.length) {
+                $('#grade').innerHTML = App.vazio('Nenhum horário de aula configurado. Configure em Turmas & Horários.', 'schedule');
+            } else {
+                const colunas = `grid-template-columns: 72px repeat(${diasVis.length}, minmax(130px, 1fr))`;
+                let html = `<div class="grid gap-space-sm" style="${colunas}"><div></div>`;
+                html += diasVis.map((d) => `<div class="text-center font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold py-space-xs">${DIAS_LONGOS[d]}</div>`).join('');
+                for (let ordem = 1; ordem <= linhas; ordem++) {
+                    html += `<div class="flex flex-col justify-center font-label-sm text-label-sm text-on-surface-variant"><span class="font-semibold text-on-surface">${ordem}ª aula</span></div>`;
+                    for (const d of diasVis) html += renderCelula(celula(d, ordem), t);
+                }
+                $('#grade').innerHTML = html + '</div>';
+            }
+            renderPendencias(t);
+        }
+
+        function renderCelula(h, t) {
+            const e = App.estado;
+            if (!h) return '<div class="min-h-[112px] rounded-lg bg-surface-container/40 flex items-center justify-center text-outline font-label-sm text-label-sm">sem aula</div>';
+            const a = e.aulaEm(t.id, h.id);
+            const apagada = casaFiltro(a) ? '' : 'opacity-25';
+            const hora = `<span class="font-code-sm text-code-sm text-on-surface-variant">${h.inicio}–${h.fim}</span>`;
+            if (!a) {
+                return `<button type="button" data-h="${h.id}" class="${apagada} min-h-[112px] rounded-lg border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary-fixed/20 transition-all flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary">
+                    ${hora}<span class="flex items-center gap-1 font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">add</span>Alocar aula</span></button>`;
+            }
+            const s = App.STATUS[a.status];
+            const d = e.mapa.disc.get(a.disciplina_id);
+            const v = a.voluntario_id ? e.mapa.vol.get(a.voluntario_id) : null;
+            const dica = a.problemas.map((p) => `${p.regra}: ${p.msg}`).join('\n');
+            return `<button type="button" data-h="${h.id}" title="${esc(dica)}"
+                class="${apagada} min-h-[112px] text-left rounded-lg border-l-4 ${s.borda} ${s.fundo} shadow-sm hover:shadow-md hover:-translate-y-px transition-all p-space-sm flex flex-col gap-1">
+                <div class="flex items-center justify-between gap-1">${hora}<span class="material-symbols-outlined text-[16px] ${a.status === 'coberta' ? 'text-secondary' : a.status === 'conflito' ? 'text-error' : 'text-warning'}">${s.icone}</span></div>
+                <span class="font-title-md text-title-md text-on-surface leading-tight">${esc(d.nome)}</span>
+                <span class="font-body-sm text-body-sm ${v ? 'text-on-surface-variant' : 'text-warning font-semibold'} flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[15px]">${v ? 'person' : 'person_off'}</span>${v ? esc(v.nome.split(' ').slice(0, 2).join(' ')) : 'Sem professor'}</span>
+                ${a.status === 'conflito' ? `<span class="font-label-sm text-label-sm text-error leading-tight">${esc(a.problemas[0].msg)}${a.problemas.length > 1 ? ` (+${a.problemas.length - 1})` : ''}</span>` : ''}
+            </button>`;
+        }
+
+        function renderPendencias(t) {
+            const e = App.estado;
+            const da = e.alertas.filter((x) => x.turma_id === t.id);
+            const grupos = [
+                ['conflito', 'Conflitos', 'error', 'text-error'],
+                ['descoberta', 'Aulas sem professor', 'person_off', 'text-warning'],
+                ['demanda', 'Aulas faltando na grade', 'playlist_add', 'text-tertiary-container'],
+                ['capacidade', 'Capacidade', 'event_busy', 'text-error'],
+                ['excesso', 'Acima da demanda', 'info', 'text-on-surface-variant'],
+            ];
+            const html = grupos.map(([tipo, titulo, icone, cor]) => {
+                const itens = da.filter((x) => x.tipo === tipo);
+                if (!itens.length) return '';
+                return `<div class="flex flex-col gap-space-xs">
+                    <span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold ${cor} flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">${icone}</span>${titulo} (${itens.length})</span>
+                    ${itens.map((x) => `<${x.aula_id ? `button type="button" data-aula="${x.aula_id}"` : 'div'} class="text-left p-space-sm rounded-lg bg-surface-container-low ${x.aula_id ? 'hover:bg-surface-container cursor-pointer' : ''} flex flex-col gap-0.5">
+                        ${x.aula_id ? `<span class="font-code-sm text-code-sm text-on-surface-variant">${esc(x.titulo.replace(t.nome + ' · ', ''))}</span>` : ''}
+                        <span class="font-body-sm text-body-sm text-on-surface">${esc(x.msg)}</span></${x.aula_id ? 'button' : 'div'}>`).join('')}
+                </div>`;
+            }).join('');
+            $('#pendencias').innerHTML = html || App.vazio('Nenhuma pendência nesta turma. Grade fechada!', 'verified');
+        }
+
+        $('#abasTurma').addEventListener('click', (ev) => {
+            const b = ev.target.closest('[data-turma]');
+            if (!b) return;
+            turmaSel = Number(b.dataset.turma);
+            history.replaceState(null, '', `?turma=${turmaSel}`);
+            render(App.estado);
+        });
+        $('#grade').addEventListener('click', (ev) => {
+            const b = ev.target.closest('[data-h]');
+            if (b) abrirAula(turmaSel, Number(b.dataset.h));
+        });
+        $('#pendencias').addEventListener('click', (ev) => {
+            const b = ev.target.closest('[data-aula]');
+            if (!b) return;
+            const a = App.estado.mapa.aula.get(Number(b.dataset.aula));
+            if (a) abrirAula(a.turma_id, a.horario_id);
+        });
+        for (const id of ['#fDisc', '#fVol', '#fDia', '#fSit']) $(id).addEventListener('input', renderGrade);
+        $('#limpar').onclick = () => {
+            for (const [id, v] of [['#fDisc', 'todas'], ['#fVol', 'todos'], ['#fDia', 'todos'], ['#fSit', 'todas']]) $(id).value = v;
+            renderGrade();
+        };
+
+        // ---------------------------------------------------------- edição de uma aula (RF06, RF12, RF13, RF16)
+        async function abrirAula(turmaId, horarioId) {
+            const e = App.estado;
+            const t = e.mapa.turma.get(turmaId);
+            const h = e.mapa.hor.get(horarioId);
+            const aula = e.aulaEm(turmaId, horarioId);
+            let profSel = aula?.voluntario_id ?? '';
+
+            const porTurma = (d) => d.por_turma.find((p) => p.turma_id === turmaId);
+            const corpo = `
+                <div class="flex flex-col gap-space-md">
+                    ${aula ? `<div class="flex items-center gap-space-sm flex-wrap">${App.chipStatus(aula.status)}<span class="font-label-sm text-label-sm text-on-surface-variant">Atualizada em ${App.dataHora(aula.atualizado_em)}</span></div>
+                        ${App.listaProblemas(aula.problemas)}${App.listaProblemas(aula.avisos, 'aviso')}` : ''}
+                    <label class="flex flex-col gap-1"><span class="${cls.label}">Disciplina</span>
+                        <select id="selDisc" class="${cls.input} cursor-pointer">
+                            <option value="">Nenhuma aula (horário livre)</option>
+                            ${e.disciplinas.map((d) => {
+                                const p = porTurma(d);
+                                const cheia = p.alocadas >= d.aulas_semanais && aula?.disciplina_id !== d.id;
+                                return `<option value="${d.id}" ${aula?.disciplina_id === d.id ? 'selected' : ''}>${esc(d.nome)} — ${p.alocadas} de ${d.aulas_semanais} na turma${cheia ? ' (demanda atendida)' : ''}</option>`;
+                            }).join('')}
+                        </select></label>
+                </div>
+                <div class="flex flex-col gap-space-sm">
+                    <div class="flex items-center justify-between gap-space-sm">
+                        <div class="flex items-center gap-space-xs"><span class="${cls.chipRegra}">RF12 & RF13</span>
+                            <h3 class="font-title-md text-title-md text-on-surface font-semibold">Professor</h3></div>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Quem pode aparece primeiro</span>
+                    </div>
+                    <div id="candidatos" class="flex flex-col gap-space-xs"></div>
+                </div>`;
+
+            const el = App.drawer.abrir({
+                icone: 'event', largura: 'max-w-xl',
+                titulo: `${t.nome} · ${DIAS[h.dia]} ${h.ordem}ª aula`,
+                subtitulo: `${DIAS_LONGOS[h.dia]}, ${h.ordem}ª aula (${h.inicio} às ${h.fim}) · ${t.periodo}`,
+                corpo,
+                rodape: `<div>${aula ? `<button type="button" id="btnRemover" class="${cls.btnNeutro} !text-error"><span class="material-symbols-outlined text-[18px]">delete</span>Remover aula</button>` : ''}</div>
+                    <div class="flex items-center gap-space-sm"><button type="button" id="btnCancelar" class="${cls.btnNeutro}">Cancelar</button>
+                    <button type="button" id="btnSalvar" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">save</span>Salvar</button></div>`,
+            });
+
+            async function carregarCandidatos() {
+                const discId = $('#selDisc', el).value;
+                const box = $('#candidatos', el);
+                if (!discId) {
+                    box.innerHTML = '<p class="font-body-sm text-body-sm text-on-surface-variant p-space-sm bg-surface-container-low rounded-lg">Escolha uma disciplina para ver os professores.</p>';
+                    return;
+                }
+                box.innerHTML = '<p class="font-body-sm text-body-sm text-on-surface-variant">Verificando regras…</p>';
+                try {
+                    const lista = await api('GET', `/api/candidatos?turma_id=${turmaId}&horario_id=${horarioId}&disciplina_id=${discId}`);
+                    const podem = lista.filter((c) => c.elegivel);
+                    const naoPodem = lista.filter((c) => !c.elegivel);
+                    const item = (c, i) => {
+                        const bloq = !c.elegivel;
+                        const recomendado = i === 0 && c.elegivel && !c.avisos.length;
+                        return `<label class="flex items-start gap-space-sm p-space-sm rounded-lg cursor-pointer transition-all ${bloq ? 'bg-surface-container-low/60' : 'bg-surface-container-low hover:bg-surface-container'} has-[:checked]:ring-2 has-[:checked]:ring-primary ${!c.ativo && !c.atual ? 'opacity-50 cursor-not-allowed' : ''}">
+                            <input type="radio" name="prof" value="${c.id}" ${String(c.id) === String(profSel) ? 'checked' : ''} ${!c.ativo && !c.atual ? 'disabled' : ''} class="mt-1 accent-[#006c49]" />
+                            <div class="flex-1 flex flex-col gap-0.5">
+                                <div class="flex items-center gap-space-xs flex-wrap">
+                                    <span class="font-title-md text-title-md ${bloq ? 'text-on-surface-variant' : 'text-on-surface'}">${esc(c.nome)}</span>
+                                    ${recomendado ? '<span class="px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-label-sm text-label-sm">Recomendado</span>' : ''}
+                                    ${c.atual ? '<span class="px-1.5 py-0.5 rounded bg-surface-container-highest text-primary font-label-sm text-label-sm">Atual</span>' : ''}
+                                </div>
+                                <span class="font-label-sm text-label-sm ${bloq ? 'text-on-surface-variant' : 'text-secondary'}">${bloq ? '' : 'Disponível · '}${c.carga} aula(s) na semana · limite ${c.limite_aulas}</span>
+                                ${App.listaProblemas(c.impedimentos)}${App.listaProblemas(c.avisos, 'aviso')}
+                            </div></label>`;
+                    };
+                    box.innerHTML = `
+                        <label class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer has-[:checked]:ring-2 has-[:checked]:ring-primary">
+                            <input type="radio" name="prof" value="" ${profSel === '' || profSel == null ? 'checked' : ''} class="accent-[#006c49]" />
+                            <span class="font-title-md text-title-md text-on-surface-variant">Deixar sem professor</span></label>
+                        ${podem.length ? podem.map(item).join('') : '<p class="font-body-sm text-body-sm text-warning p-space-sm bg-warning-container/40 rounded-lg">Ninguém atende a todas as regras neste horário. Considere outro horário ou cadastrar disponibilidade.</p>'}
+                        ${naoPodem.length ? `<details class="group" ${podem.length ? '' : 'open'}>
+                            <summary class="cursor-pointer select-none font-label-md text-label-md text-on-surface-variant py-space-xs list-none flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[18px] group-open:rotate-90 transition-transform">chevron_right</span>Não podem assumir e por quê (${naoPodem.length})</summary>
+                            <div class="flex flex-col gap-space-xs mt-space-xs">${naoPodem.map(item).join('')}</div></details>` : ''}`;
+                } catch (erro) {
+                    box.innerHTML = `<p class="text-error">${esc(erro.message)}</p>`;
+                }
+            }
+            $('#selDisc', el).onchange = carregarCandidatos;
+            $('#candidatos', el).addEventListener('change', (ev) => { if (ev.target.name === 'prof') profSel = ev.target.value; });
+            $('#btnCancelar', el).onclick = () => App.drawer.fechar();
+            carregarCandidatos();
+
+            if (aula) $('#btnRemover', el).onclick = (ev) => removerAula(aula, ev.currentTarget);
+
+            $('#btnSalvar', el).onclick = (ev) => App.acao(ev.currentTarget, async () => {
+                const discId = Number($('#selDisc', el).value);
+                if (!discId) {
+                    if (aula) return removerAula(aula, null);
+                    return App.drawer.fechar();
+                }
+                const corpo = { turma_id: turmaId, horario_id: horarioId, disciplina_id: discId, voluntario_id: profSel ? Number(profSel) : null };
+                let r;
+                try {
+                    r = await api('PUT', '/api/aulas', corpo);
+                } catch (erro) {
+                    if (!erro.dados?.pode_forcar) throw erro;
+                    const ok = await App.confirmar({
+                        titulo: 'Salvar mesmo com conflito?', icone: 'gpp_maybe', perigo: true, confirmar: 'Salvar com conflito',
+                        mensagem: `<p class="mb-space-sm">Esta alocação desrespeita as regras abaixo:</p>${App.listaProblemas(erro.dados.impedimentos)}
+                            <p class="mt-space-sm">Se salvar, a aula ficará marcada como <strong>conflito</strong> até ser resolvida (RN10: a decisão final é da coordenação).</p>`,
+                    });
+                    if (!ok) return;
+                    r = await api('PUT', '/api/aulas', { ...corpo, forcar: true });
+                }
+                App.drawer.fechar();
+                await App.recarregar();
+                if (r.conflito) App.toast('Aula salva com conflito sinalizado.', 'aviso');
+                else if (r.avisos.length) App.toast(`Aula salva. Atenção: ${r.avisos.map((a) => a.msg).join('; ')}`, 'aviso');
+                else App.toast(corpo.voluntario_id ? 'Aula garantida!' : 'Aula salva sem professor.');
+            });
+        }
+
+        async function removerAula(aula, botao) {
+            const e = App.estado;
+            const ok = await App.confirmar({
+                titulo: 'Remover esta aula da grade?', perigo: true, icone: 'delete', confirmar: 'Remover',
+                mensagem: `${esc(e.mapa.disc.get(aula.disciplina_id).nome)} em ${esc(App.localAula(e, aula))} será removida e o horário ficará livre. A alteração fica registrada no histórico.`,
+            });
+            if (!ok) return;
+            await App.acao(botao, async () => {
+                await api('DELETE', `/api/aulas/${aula.id}`);
+                App.drawer.fechar();
+                await App.recarregar();
+                App.toast('Aula removida.');
+            });
+        }
+
+        App.start({
+            ativo: 'grade.html',
+            render,
+            depois(e) {
+                const a = e.mapa.aula.get(Number(App.params.get('aula')));
+                if (a) {
+                    turmaSel = a.turma_id;
+                    render(e);
+                    abrirAula(a.turma_id, a.horario_id);
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>

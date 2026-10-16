@@ -1,0 +1,79 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overscroll-behavior: none;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #c0c9c0 transparent;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400;
+    line-height: 1;
+    user-select: none;
+}
+
+.icone-cheio {
+    font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+/* Evita o "piscar" de páginas antes do shell montar */
+body:not(.pronto) main {
+    opacity: 0;
+}
+
+main {
+    transition: opacity .15s ease;
+}
+
+:focus-visible {
+    outline: 2px solid #006c49;
+    outline-offset: 2px;
+}
+
+@media print {
+    @page {
+        size: A4 landscape;
+        margin: 12mm;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+    .no-print,
+    #sidebar,
+    #sidebarFundo,
+    #topo {
+        display: none !important;
+    }
+
+    #conteudo {
+        padding: 0 !important;
+    }
+
+    #conteudo>main {
+        padding: 0 !important;
+    }
+
+    .quebra-pagina {
+        break-after: page;
+    }
+
+    table,
+    tr {
+        break-inside: avoid;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        box-shadow: none !important;
+    }
+}

@@ -1,1413 +1,432 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="web_dashboard" name="shell-type" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-        rel="stylesheet" />
+    <title>Professores Voluntários · Grade Solidária</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <style>
-        @layer base {
-
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            body {
-                overscroll-behavior: none;
-            }
-
-            main>:first-child {
-                margin-top: 0 !important;
-            }
-
-            main>:last-child {
-                margin-bottom: 0 !important;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/estilo.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script
-        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-error-container": "#93000a", "surface-tint": "#2d6a48", "on-secondary-fixed": "#002113", "surface-container": "#eaedff", "on-tertiary-container": "#68bcff", "primary": "#003820", "primary-fixed": "#b0f1c7", "tertiary-fixed": "#cce5ff", "on-surface-variant": "#404942", "on-error": "#ffffff", "surface-bright": "#faf8ff", "background": "#faf8ff", "secondary-fixed": "#6ffbbe", "on-tertiary": "#ffffff", "outline-variant": "#c0c9c0", "on-surface": "#131b2e", "surface-container-lowest": "#ffffff", "surface-container-highest": "#dae2fd", "surface": "#faf8ff", "outline": "#707971", "on-primary-container": "#84c39b", "surface-container-high": "#e2e7ff", "primary-container": "#0f5132", "secondary-fixed-dim": "#4edea3", "on-primary": "#ffffff", "on-secondary-fixed-variant": "#005236", "tertiary": "#003351", "on-secondary-container": "#00714d", "inverse-primary": "#95d4ac", "error-container": "#ffdad6", "secondary": "#006c49", "on-primary-fixed": "#002111", "on-tertiary-fixed": "#001d31", "secondary-container": "#6cf8bb", "surface-container-low": "#f2f3ff", "inverse-on-surface": "#eef0ff", "on-secondary": "#ffffff", "tertiary-fixed-dim": "#93ccff", "on-primary-fixed-variant": "#0f5132", "surface-variant": "#dae2fd", "primary-fixed-dim": "#95d4ac", "error": "#ba1a1a", "inverse-surface": "#283044", "on-tertiary-fixed-variant": "#004b73", "surface-dim": "#d2d9f4", "tertiary-container": "#004b74", "on-background": "#131b2e" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-lg": "1.5rem", "margin": "1rem", "space-lg": "1rem", "space-xl": "1.5rem", "gutter": "1rem", "margin-md": "1.5rem", "margin-lg": "2rem", "space-2xs": "0.125rem", "space-md": "0.75rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-2xl": "2rem" }, "fontFamily": { "code-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "display-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "label-md": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "title-md": ["Inter"], "headline-sm": ["Plus Jakarta Sans"], "body-sm": ["Inter"], "body-md": ["Inter"] }, "fontSize": { "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "body-lg": ["15px", { "lineHeight": "24px", "fontWeight": "400" }], "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "title-md": ["15px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }] } } } };</script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
 </head>
 
 <body class="bg-surface font-body-md text-on-surface antialiased">
-    <aside
-        class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between overflow-y-auto">
-        <div class="flex flex-col">
-            <div class="h-16 px-space-lg flex items-center gap-space-sm"><img alt="Logo EducaPop"
-                    class="h-8 w-auto object-contain"
-                    src="https://lh3.googleusercontent.com/aida/AEtjO1Vt-BXb4yCPeZH-6UmaXE4_l_K4kjD74NEdWI8OXq-2bGI7pxypawKuZRJC8H5OLo3kNjjgaRDste4E7EfrHrY-D5qFU-EIuB1TSnqkh-YAqwV0Vu5ENhnDWwUAfX6rvVBSjBrrFp8-XhRrgADrmBNAkZH7VOp6LJAKyTF9tKyzwpHXmXomma2TeHSFEdnjjtVZSel39Dz8bZfn4dQ5qUlPDVNpCMYkS3VQ7YTmV5r_LSO_ypX8fd1TjO4" />
-                <div class="flex flex-col"><span
-                        class="font-headline-sm text-headline-sm text-primary tracking-tight">EducaPop</span><span
-                        class="font-label-sm text-label-sm text-on-surface-variant leading-none">Gestão Popular</span>
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <section class="flex flex-col gap-space-lg">
+                <div id="cabecalho"></div>
+                <div id="kpis" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md"></div>
+            </section>
+
+            <!-- Filtros (RF19) -->
+            <section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+                <div class="relative flex-1 min-w-[240px]">
+                    <span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                    <input id="busca" type="search" placeholder="Filtrar por nome, telefone ou e-mail..."
+                        class="w-full h-10 pl-10 pr-space-md bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" />
+                </div>
+                <div class="flex items-center flex-wrap gap-space-sm">
+                    <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Disciplina:</span>
+                        <select id="fDisciplina" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select>
+                    </label>
+                    <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Situação:</span>
+                        <select id="fSituacao" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer">
+                            <option value="todos">Todos</option>
+                            <option value="ativo">Ativos (aptos à grade)</option>
+                            <option value="inativo">Inativos (bloqueados RN06)</option>
+                        </select>
+                    </label>
+                    <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Livre em:</span>
+                        <select id="fDia" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select>
+                    </label>
+                    <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Carga:</span>
+                        <select id="fCarga" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer">
+                            <option value="todas">Todas</option>
+                            <option value="acima">Acima do limite</option>
+                            <option value="no_limite">No limite</option>
+                            <option value="equilibrada">Equilibrada</option>
+                            <option value="baixa">Pode assumir mais</option>
+                        </select>
+                    </label>
+                    <button id="limpar" type="button" title="Limpar filtros"
+                        class="p-2 text-on-surface-variant hover:text-on-surface rounded-lg hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">filter_alt_off</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quadro de voluntários (RF01, RF03, RF04, RF14, RF15) -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+                <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm">
+                    <div class="flex items-center gap-space-xs">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Quadro Docente Vigente</span>
+                        <span id="contagem" class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm font-semibold"></span>
+                    </div>
+                    <div class="flex items-center gap-space-md flex-wrap text-on-surface-variant font-body-sm text-body-sm">
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>Dentro do limite semanal</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>No limite</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-error"></span>Acima da capacidade pactuada</span>
+                    </div>
+                </div>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                                <th class="py-space-sm px-space-md">Professor Voluntário</th>
+                                <th class="py-space-sm px-space-md">Disciplinas Aptas (RF03)</th>
+                                <th class="py-space-sm px-space-md">Disponibilidade (RF04)</th>
+                                <th class="py-space-sm px-space-md">Carga / Teto Semanal (RF14)</th>
+                                <th class="py-space-sm px-space-md">Status (RN06)</th>
+                                <th class="py-space-sm px-space-md text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas" class="divide-y divide-surface-container font-body-md text-body-md text-on-surface"></tbody>
+                    </table>
                 </div>
             </div>
-            <nav class="flex flex-col gap-space-xs px-space-md py-space-sm"
-                data-active-classes="bg-primary-container text-on-primary font-title-md font-semibold rounded-lg">
-                <div
-                    class="px-space-sm pt-space-xs pb-space-2xs font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                    Gestão de Pessoas</div><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="professores-voluntarios" href="#"><span
-                        class="material-symbols-outlined text-[20px]">volunteer_activism</span><span>Professores
-                        Voluntários</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="alunos-e-matriculas" href="#"><span
-                        class="material-symbols-outlined text-[20px]">school</span><span>Alunos &amp;
-                        Matrículas</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="gestores-e-coordenadores" href="#"><span
-                        class="material-symbols-outlined text-[20px]">badge</span><span>Gestores &amp;
-                        Coordenadores</span></a>
-                <div
-                    class="px-space-sm pt-space-md pb-space-2xs font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                    Acadêmico &amp; Demandas</div><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="disciplinas-e-cargas" href="#"><span
-                        class="material-symbols-outlined text-[20px]">menu_book</span><span>Disciplinas &amp;
-                        Cargas</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="turmas-e-salas" href="#"><span
-                        class="material-symbols-outlined text-[20px]">meeting_room</span><span>Turmas &amp;
-                        Salas</span></a>
-                <div
-                    class="px-space-sm pt-space-md pb-space-2xs font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                    Grade Semanal</div><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="montagem-da-grade" href="#"><span
-                        class="material-symbols-outlined text-[20px]">calendar_month</span><span>Montagem da
-                        Grade</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="visualizacao-e-conflitos" href="#"><span
-                        class="material-symbols-outlined text-[20px]">warning</span><span>Visualização &amp;
-                        Conflitos</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="substituicoes-inteligentes" href="#"><span
-                        class="material-symbols-outlined text-[20px]">swap_horiz</span><span>Substituições
-                        Inteligentes</span></a>
-                <div
-                    class="px-space-sm pt-space-md pb-space-2xs font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                    Monitoramento &amp; Auditoria</div><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="painel-de-situacao" href="#"><span
-                        class="material-symbols-outlined text-[20px]">monitoring</span><span>Painel de
-                        Situação</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="historico-de-trocas" href="#"><span
-                        class="material-symbols-outlined text-[20px]">history</span><span>Histórico de
-                        Trocas</span></a><a
-                    class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-body-sm text-body-sm transition-all"
-                    data-path="exportar-grade" href="#"><span
-                        class="material-symbols-outlined text-[20px]">download</span><span>Exportar Grade</span></a>
-            </nav>
+
+            <section class="bg-primary-container/10 rounded-xl p-space-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+                <div class="flex items-center gap-space-md">
+                    <div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[28px]">volunteer_activism</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h4 class="font-headline-sm text-headline-sm text-primary">Diretrizes de Cuidado com o Voluntário (RN08)</h4>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant max-w-3xl">
+                            Nossos professores dedicam tempo livre sem remuneração. O sistema avisa sempre que uma alocação
+                            passaria do limite semanal definido na ficha de cada pessoa. Mantenha os contatos de WhatsApp
+                            atualizados para substituições emergenciais.
+                        </p>
+                    </div>
+                </div>
+                <a href="substituicoes.html" class="px-space-md py-space-sm bg-surface-container-lowest text-primary hover:bg-surface-container rounded-lg font-title-md text-title-md shadow-sm transition-all shrink-0">
+                    Buscar substitutos
+                </a>
+            </section>
         </div>
-        <div class="p-space-md m-space-sm bg-surface-container-low rounded-xl flex items-center justify-between">
-            <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Cursinho
-                    Popular</span><span class="font-title-md text-title-md text-primary font-semibold">Comunitário
-                    2025</span></div><span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
-        </div>
-    </aside>
-    <div class="pl-64">
-        <header
-            class="fixed top-0 left-64 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg">
-            <div class="flex items-center gap-space-md">
-                <div
-                    class="flex items-center gap-space-xs bg-surface-container-lowest px-space-sm py-space-xs rounded-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-                    <span class="material-symbols-outlined text-primary text-[20px]">apartment</span>
-                    <div class="flex flex-col"><span
-                            class="font-label-sm text-label-sm text-on-surface-variant leading-none">Unidade
-                            Ativa</span><span
-                            class="font-title-md text-title-md text-on-surface font-semibold leading-tight">Núcleo
-                            Central - ZL</span></div><span
-                        class="material-symbols-outlined text-on-surface-variant text-[18px] ml-space-xs">expand_more</span>
-                </div>
-                <div class="relative flex items-center"><span
-                        class="material-symbols-outlined absolute left-space-sm text-on-surface-variant text-[18px]">search</span><input
-                        class="w-72 h-9 pl-8 pr-12 bg-surface-container-lowest rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary shadow-[0_1px_8px_rgba(0,0,0,0.04)]"
-                        placeholder="Buscar professor, matéria, sala..." type="text" /><span
-                        class="absolute right-space-sm font-code-sm text-code-sm text-on-surface-variant bg-surface-container-high px-space-2xs py-0.5 rounded">Ctrl+K</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-space-md">
-                <div class="flex items-center gap-space-xs"><button
-                        class="p-space-xs rounded-lg bg-surface-container-lowest hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_8px_rgba(0,0,0,0.04)]"
-                        type="button"><span
-                            class="material-symbols-outlined text-[20px]">add_circle</span></button><button
-                        class="p-space-xs rounded-lg bg-surface-container-lowest hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors shadow-[0_1px_8px_rgba(0,0,0,0.04)]"
-                        type="button"><span class="material-symbols-outlined text-[20px]">notifications</span></button>
-                </div>
-                <div class="flex items-center gap-space-sm pl-space-sm">
-                    <div class="flex flex-col text-right"><span
-                            class="font-title-md text-title-md text-on-surface font-semibold leading-tight">Rosivaldo</span><span
-                            class="font-label-sm text-label-sm text-secondary font-medium leading-none">Coordenador
-                            Geral</span></div>
-                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span
-                            class="material-symbols-outlined text-on-primary text-[18px]">person</span></div>
-                </div>
-            </div>
-        </header>
-        <main class="relative pt-16 w-full bg-surface min-h-screen px-space-lg py-space-lg">
-            <div class="flex flex-col w-full gap-space-xl">
-                <section class="flex flex-col gap-space-lg">
-                    <!-- Header Block with Actions -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
-                        <div class="flex flex-col max-w-2xl">
-                            <div class="flex items-center gap-space-xs mb-space-2xs">
-                                <span
-                                    class="px-space-xs py-0.5 rounded bg-surface-container-highest text-primary font-code-sm text-code-sm tracking-wide">MÓDULO
-                                    01 • CORPO DOCENTE</span>
-                                <span class="text-on-surface-variant font-label-sm text-label-sm">• Gestão
-                                    Comunitária</span>
+    </main>
+
+    <script>
+        const { esc, cls, $, $$, api, DIAS } = App;
+
+        function render(e) {
+            const i = e.indicadores;
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'MÓDULO 01 • CORPO DOCENTE',
+                titulo: 'Professores Voluntários',
+                descricao: 'Cadastre professores, associe disciplinas habilitadas, defina a disponibilidade semanal e acompanhe a carga de aulas para evitar sobrecarga.',
+                acoes: `<a href="exportar.html" class="${cls.btnSec}"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">download</span><span>Exportar grade</span></a>
+                    <button type="button" id="novo" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">person_add</span><span>Novo Voluntário</span></button>`,
+            });
+            $('#novo').onclick = () => abrirFicha(null);
+
+            const ociosos = e.voluntarios.filter((v) => v.situacao_carga === 'baixa').length;
+            $('#kpis').innerHTML = [
+                App.kpi({
+                    rotulo: 'Total Cadastrado', valor: e.voluntarios.length, unidade: 'docentes', icone: 'diversity_3', cor: 'text-primary', destaque: true,
+                    rodape: `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> ${i.voluntarios_ativos} ativos</span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">${i.voluntarios_inativos} inativos (RN06)</span>`,
+                }),
+                App.kpi({
+                    rotulo: 'Carga Média Semanal', valor: String(i.carga_media).replace('.', ','), unidade: 'aulas / voluntário ativo', icone: 'timelapse', cor: 'text-on-surface',
+                    rodape: ociosos ? `<span class="material-symbols-outlined text-[16px] text-surface-tint">trending_up</span><span class="font-label-sm text-label-sm text-surface-tint font-medium">${ociosos} pode(m) assumir mais aulas</span>`
+                        : '<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span><span class="font-label-sm text-label-sm text-secondary font-medium">Distribuição equilibrada</span>',
+                }),
+                App.kpi({
+                    rotulo: 'Risco de Sobrecarga', valor: i.sobrecarregados, unidade: 'acima do limite individual', icone: 'crisis_alert', cor: i.sobrecarregados ? 'text-error' : 'text-secondary',
+                    rodape: i.sobrecarregados ? '<span class="px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">Revisão preventiva RF15</span>'
+                        : '<span class="font-label-sm text-label-sm text-secondary">Ninguém acima do limite</span>',
+                }),
+                App.kpi({
+                    rotulo: 'Cobertura da Grade', valor: `${i.cobertura_pct}%`, icone: 'pie_chart', cor: 'text-primary',
+                    unidade: `${i.cobertas} de ${i.demanda_total} aulas`,
+                    rodape: `<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full" style="width:${i.cobertura_pct}%"></div></div>`,
+                }),
+            ].join('');
+
+            // Opções dos filtros, preservando seleção atual
+            const fD = $('#fDisciplina'), fDia = $('#fDia');
+            const selD = fD.value || 'todas', selDia = fDia.value || 'todos';
+            fD.innerHTML = '<option value="todas">Todas as áreas</option>' + App.opcoes(e.disciplinas, selD);
+            const { dias } = App.estrutura(e);
+            fDia.innerHTML = '<option value="todos">Qualquer dia</option>' + dias.map((d) => `<option value="${d}" ${String(d) === selDia ? 'selected' : ''}>${App.DIAS_LONGOS[d]}</option>`).join('');
+            if (!fD.value) fD.value = 'todas';
+            if (!fDia.value) fDia.value = 'todos';
+            renderLinhas();
+        }
+
+        function filtrados() {
+            const e = App.estado;
+            const termo = $('#busca').value.trim().toLowerCase();
+            const disc = $('#fDisciplina').value, sit = $('#fSituacao').value, dia = $('#fDia').value, carga = $('#fCarga').value;
+            return e.voluntarios.filter((v) =>
+                (!termo || [v.nome, v.email, v.telefone].some((c) => String(c || '').toLowerCase().includes(termo))) &&
+                (disc === 'todas' || v.disciplinas.includes(Number(disc))) &&
+                (sit === 'todos' || (sit === 'ativo') === v.ativo) &&
+                (dia === 'todos' || v.disponibilidade.some((h) => e.mapa.hor.get(h)?.dia === Number(dia))) &&
+                (carga === 'todas' || v.situacao_carga === carga));
+        }
+
+        function renderLinhas() {
+            const e = App.estado;
+            const lista = filtrados();
+            $('#contagem').textContent = `${lista.length} de ${e.voluntarios.length} registros`;
+            if (!lista.length) {
+                $('#linhas').innerHTML = `<tr><td colspan="6">${App.vazio('Nenhum voluntário encontrado com esses filtros.', 'person_search')}</td></tr>`;
+                return;
+            }
+            $('#linhas').innerHTML = lista.map((v) => {
+                const discs = v.disciplinas.map((id) => e.mapa.disc.get(id)).filter(Boolean);
+                const porDia = {};
+                for (const h of v.disponibilidade.map((id) => e.mapa.hor.get(id)).filter(Boolean)) porDia[h.dia] = (porDia[h.dia] || 0) + 1;
+                const dias = Object.keys(porDia).map(Number).sort();
+                const acima = v.situacao_carga === 'acima';
+                return `
+                <tr class="hover:bg-surface-container-low/60 transition-colors group cursor-pointer ${acima ? 'bg-error-container/10' : ''} ${v.ativo ? '' : 'opacity-70'}" data-id="${v.id}">
+                    <td class="py-space-md px-space-md">
+                        <div class="flex items-center gap-space-sm">${App.avatar(v)}
+                            <div class="flex flex-col">
+                                <div class="flex items-center gap-1">
+                                    <span class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-primary transition-colors">${esc(v.nome)}</span>
+                                    ${acima ? '<span class="material-symbols-outlined text-[16px] text-error" title="Sobrecarga: acima do teto">warning</span>' : ''}
+                                </div>
+                                <span class="font-label-sm text-label-sm text-on-surface-variant">${esc([v.email, v.telefone].filter(Boolean).join(' • ') || 'Sem contato cadastrado')}</span>
                             </div>
-                            <h1 class="font-display-lg text-display-lg text-primary tracking-tight">Professores
-                                Voluntários</h1>
-                            <p class="font-body-md text-body-md text-on-surface-variant mt-space-2xs">
-                                Cadastre professores, associe disciplinas habilitadas, defina a grade de disponibilidade
-                                semanal e controle a carga horária para evitar sobrecarga.
-                            </p>
                         </div>
-                        <div class="flex items-center flex-wrap gap-space-sm self-start md:self-auto">
-                            <button
-                                class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-surface-container-lowest text-on-surface font-title-md text-title-md rounded-lg shadow-sm hover:bg-surface-container transition-all"
-                                type="button">
-                                <span
-                                    class="material-symbols-outlined text-[18px] text-on-surface-variant">file_upload</span>
-                                <span>Importar CSV</span>
-                            </button>
-                            <button
-                                class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-surface-container-lowest text-on-surface font-title-md text-title-md rounded-lg shadow-sm hover:bg-surface-container transition-all"
-                                type="button">
-                                <span
-                                    class="material-symbols-outlined text-[18px] text-on-surface-variant">download</span>
-                                <span>Exportar</span>
-                            </button>
-                            <button
-                                class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-primary-container hover:bg-primary text-on-primary font-title-md text-title-md font-medium rounded-lg shadow-md transition-all"
-                                onclick="openDrawer('novo')" type="button">
-                                <span class="material-symbols-outlined text-[18px]">person_add</span>
-                                <span>+ Novo Voluntário</span>
-                            </button>
+                    </td>
+                    <td class="py-space-md px-space-md">
+                        <div class="flex flex-wrap gap-1 max-w-xs">${discs.length ? discs.map((d, i) => `<span class="inline-flex items-center px-2 py-0.5 rounded ${i === 0 ? 'bg-primary-fixed text-on-primary-fixed font-semibold' : 'bg-surface-container text-on-surface'} font-label-sm text-label-sm">${esc(d.nome)}</span>`).join('')
+                        : '<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm">Nenhuma disciplina</span>'}</div>
+                    </td>
+                    <td class="py-space-md px-space-md">
+                        <div class="flex items-center flex-wrap gap-1 font-code-sm text-code-sm text-on-surface-variant max-w-[220px]">
+                            ${dias.length ? dias.map((d) => `<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold" title="${porDia[d]} horário(s) livre(s)">${DIAS[d]} ×${porDia[d]}</span>`).join('')
+                            : '<span class="text-error">Sem horários</span>'}
+                        </div>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">${v.disponibilidade.length} de ${e.horarios.length} horários</span>
+                    </td>
+                    <td class="py-space-md px-space-md">${App.barraCarga(v, 'w-44')}</td>
+                    <td class="py-space-md px-space-md">
+                        ${v.ativo ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/40 text-primary font-label-sm text-label-sm font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ativo</span>'
+                        : '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-outline"></span> Inativo</span>'}
+                    </td>
+                    <td class="py-space-md px-space-md text-right">
+                        <div class="flex items-center justify-end gap-1">
+                            <button type="button" class="${cls.btnIcone}" data-acao="editar" title="Ficha & disponibilidade"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                            <button type="button" class="${cls.btnIcone} ${v.ativo ? 'hover:!text-error' : ''}" data-acao="situacao" title="${v.ativo ? 'Inativar voluntário' : 'Reativar voluntário'}">
+                                <span class="material-symbols-outlined text-[22px] ${v.ativo ? 'text-secondary' : ''}">${v.ativo ? 'toggle_on' : 'toggle_off'}</span></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        $('#linhas').addEventListener('click', (ev) => {
+            const tr = ev.target.closest('tr[data-id]');
+            if (!tr) return;
+            const v = App.estado.mapa.vol.get(Number(tr.dataset.id));
+            const botao = ev.target.closest('[data-acao]');
+            if (botao?.dataset.acao === 'situacao') return alternarSituacao(v, botao);
+            abrirFicha(v);
+        });
+        for (const id of ['#busca', '#fDisciplina', '#fSituacao', '#fDia', '#fCarga']) $(id).addEventListener('input', renderLinhas);
+        $('#limpar').onclick = () => {
+            $('#busca').value = '';
+            for (const [id, v] of [['#fDisciplina', 'todas'], ['#fSituacao', 'todos'], ['#fDia', 'todos'], ['#fCarga', 'todas']]) $(id).value = v;
+            renderLinhas();
+        };
+
+        async function alternarSituacao(v, botao) {
+            if (v.ativo) {
+                const ok = await App.confirmar({
+                    titulo: `Inativar ${v.nome}?`, perigo: true, icone: 'person_off', confirmar: 'Inativar',
+                    mensagem: v.carga
+                        ? `Pela regra <strong>RN06</strong>, voluntários inativos não podem ter aulas. As <strong>${v.carga} aula(s)</strong> desta pessoa ficarão <strong>sem professor</strong> e aparecerão nas pendências para substituição.`
+                        : 'A pessoa continua no cadastro para consulta, mas não poderá receber aulas.',
+                });
+                if (!ok) return;
+            }
+            await App.acao(botao, async () => {
+                const r = await api('PATCH', `/api/voluntarios/${v.id}/situacao`, { ativo: !v.ativo, liberar_aulas: true });
+                App.toast(v.ativo ? `${v.nome} inativado(a).${r.aulas_liberadas ? ` ${r.aulas_liberadas} aula(s) ficaram sem professor.` : ''}` : `${v.nome} reativado(a).`, r.aulas_liberadas ? 'aviso' : 'ok');
+                App.drawer.fechar();
+                await App.recarregar();
+            });
+        }
+
+        // ---------------------------------------------------------- ficha do voluntário
+        function abrirFicha(v) {
+            const e = App.estado;
+            const disc = new Set(v?.disciplinas || []);
+            const disp = new Set(v?.disponibilidade || []);
+            const { dias, linhas, celula } = App.estrutura(e);
+            const aulas = v ? e.aulas.filter((a) => a.voluntario_id === v.id) : [];
+
+            const corpo = `
+            <form id="ficha" class="flex flex-col gap-space-xl" novalidate>
+                <div class="flex flex-col gap-space-md">
+                    <div class="flex items-center justify-between gap-space-sm flex-wrap">
+                        <div class="flex items-center gap-space-xs"><span class="${cls.chipRegra}">RF01</span>
+                            <h3 class="font-title-md text-title-md text-on-surface font-semibold">1. Dados pessoais & contato</h3></div>
+                        ${v ? `<span class="font-label-sm text-label-sm text-secondary font-medium">Cadastrado em ${App.dataHora(v.criado_em).slice(0, 10)}</span>` : ''}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                        <label class="flex flex-col gap-1 sm:col-span-2"><span class="${cls.label}">Nome completo *</span>
+                            <input name="nome" required maxlength="120" class="${cls.input}" value="${esc(v?.nome)}" /></label>
+                        <label class="flex flex-col gap-1"><span class="${cls.label}">E-mail</span>
+                            <input name="email" type="email" maxlength="120" class="${cls.input}" value="${esc(v?.email)}" /></label>
+                        <label class="flex flex-col gap-1"><span class="${cls.label}">WhatsApp (avisos de grade)</span>
+                            <div class="relative"><span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-[20px]">chat</span>
+                            <input name="telefone" type="tel" maxlength="30" class="${cls.input} pl-10" value="${esc(v?.telefone)}" placeholder="(81) 90000-0000" /></div></label>
+                        <label class="flex flex-col gap-1 sm:col-span-2"><span class="${cls.label}">Formação / observações</span>
+                            <input name="observacoes" maxlength="300" class="${cls.input}" value="${esc(v?.observacoes)}" /></label>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-space-md">
+                    <div class="flex items-center justify-between gap-space-sm flex-wrap">
+                        <div class="flex items-center gap-space-xs"><span class="${cls.chipRegra}">RF03 & RN01</span>
+                            <h3 class="font-title-md text-title-md text-on-surface font-semibold">2. Disciplinas que domina</h3></div>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Só poderá ser alocado(a) nelas</span>
+                    </div>
+                    <div class="p-space-md bg-surface-container-low rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+                        ${e.disciplinas.map((d) => `
+                        <label class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
+                            <span class="flex items-center gap-2"><input type="checkbox" name="disc" value="${d.id}" ${disc.has(d.id) ? 'checked' : ''} class="w-4 h-4 accent-[#006c49]" />
+                                <span class="font-title-md text-title-md text-on-surface font-medium">${esc(d.nome)}</span></span>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant">${d.habilitados.length} apto(s)</span>
+                        </label>`).join('') || '<p class="text-on-surface-variant">Cadastre disciplinas primeiro.</p>'}
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-space-md">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <div class="flex items-center gap-space-xs"><span class="${cls.chipRegra}">RF04 & RN02</span>
+                            <h3 class="font-title-md text-title-md text-on-surface font-semibold">3. Horários em que está livre</h3></div>
+                        <div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-secondary"></span> Disponível</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-surface-container-high"></span> Indisponível</span>
                         </div>
                     </div>
-                    <!-- Quick Stats Cards (KPIs) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
-                        <!-- KPI 1 -->
-                        <div
-                            class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between relative overflow-hidden">
-                            <div
-                                class="absolute right-0 top-0 w-24 h-24 bg-primary-fixed/20 rounded-bl-full pointer-events-none">
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Total
-                                    Cadastrado</span>
-                                <span class="material-symbols-outlined text-secondary text-[22px]">diversity_3</span>
-                            </div>
-                            <div class="mt-space-md">
-                                <div class="flex items-baseline gap-space-xs">
-                                    <span class="font-display-lg text-display-lg text-primary leading-none">38</span>
-                                    <span class="font-body-sm text-body-sm text-on-surface-variant">docentes</span>
-                                </div>
-                                <div class="flex items-center gap-space-xs mt-space-xs">
-                                    <span
-                                        class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 34 ativos
-                                    </span>
-                                    <span class="font-label-sm text-label-sm text-on-surface-variant">4 inativos
-                                        (RN06)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- KPI 2 -->
-                        <div
-                            class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between relative overflow-hidden">
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Carga
-                                    Média Semanal</span>
-                                <span class="material-symbols-outlined text-surface-tint text-[22px]">timelapse</span>
-                            </div>
-                            <div class="mt-space-md">
-                                <div class="flex items-baseline gap-space-xs">
-                                    <span
-                                        class="font-display-lg text-display-lg text-on-surface leading-none">3.2</span>
-                                    <span class="font-body-sm text-body-sm text-on-surface-variant">aulas / sem</span>
-                                </div>
-                                <div class="flex items-center gap-space-xs mt-space-xs">
-                                    <span
-                                        class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
-                                    <span class="font-label-sm text-label-sm text-secondary font-medium">Equilíbrio
-                                        saudável preservado</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- KPI 3: Alert Sobrecarga -->
-                        <div
-                            class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between relative overflow-hidden">
-                            <div class="flex items-center justify-between">
-                                <span class="font-label-sm text-label-sm uppercase tracking-wider text-error">Risco de
-                                    Sobrecarga</span>
-                                <span class="material-symbols-outlined text-error text-[22px]">crisis_alert</span>
-                            </div>
-                            <div class="mt-space-md">
-                                <div class="flex items-baseline gap-space-xs">
-                                    <span class="font-display-lg text-display-lg text-error leading-none">2</span>
-                                    <span class="font-body-sm text-body-sm text-on-surface-variant">professores (&gt; 6
-                                        aulas)</span>
-                                </div>
-                                <div class="flex items-center gap-space-xs mt-space-xs">
-                                    <span
-                                        class="px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
-                                        Revisão preventiva RN08
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- KPI 4 -->
-                        <div
-                            class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between relative overflow-hidden">
-                            <div class="flex items-center justify-between">
-                                <span
-                                    class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Cobertura
-                                    de Cadeiras</span>
-                                <span
-                                    class="material-symbols-outlined text-tertiary-container text-[22px]">pie_chart</span>
-                            </div>
-                            <div class="mt-space-md">
-                                <div class="flex items-baseline gap-space-xs">
-                                    <span class="font-display-lg text-display-lg text-primary leading-none">94%</span>
-                                    <span class="font-body-sm text-body-sm text-secondary font-medium">+2 por
-                                        disciplina</span>
-                                </div>
-                                <div
-                                    class="w-full bg-surface-container-high h-1.5 rounded-full mt-space-xs overflow-hidden">
-                                    <div class="bg-secondary h-full rounded-full" style="width: 94%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <!-- Filter Bar & Search Tooling -->
-                <section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-md">
-                    <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
-                        <!-- Search Input -->
-                        <div class="relative flex-1 min-w-[280px]">
-                            <span
-                                class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                            <input
-                                class="w-full h-10 pl-10 pr-space-md bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner"
-                                id="searchInput"
-                                placeholder="Filtrar por nome, telefone WhatsApp ou e-mail institucional..."
-                                type="text" />
-                        </div>
-                        <!-- Select Dropdown Filters -->
-                        <div class="flex items-center flex-wrap gap-space-sm">
-                            <!-- Disciplina -->
-                            <div class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
-                                <span
-                                    class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Disciplina:</span>
-                                <select
-                                    class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"
-                                    id="filterSubject">
-                                    <option value="all">Todas as Áreas</option>
-                                    <option value="Matemática">Matemática</option>
-                                    <option value="Português">Português / Redação</option>
-                                    <option value="História">História</option>
-                                    <option value="Física">Física</option>
-                                    <option value="Química">Química</option>
-                                    <option value="Biologia">Biologia</option>
-                                    <option value="Geografia">Geografia</option>
-                                    <option value="Filosofia">Filosofia / Sociologia</option>
-                                    <option value="Inglês">Inglês</option>
-                                </select>
-                            </div>
-                            <!-- Situação / Status -->
-                            <div class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
-                                <span
-                                    class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Situação:</span>
-                                <select
-                                    class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"
-                                    id="filterStatus">
-                                    <option value="all">Todos</option>
-                                    <option selected="" value="Ativo">Ativos (Aptos à grade)</option>
-                                    <option value="Inativo">Inativos (Bloqueados RN06)</option>
-                                </select>
-                            </div>
-                            <!-- Turnos / Disponibilidade -->
-                            <div class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
-                                <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Turno
-                                    Livre:</span>
-                                <select
-                                    class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"
-                                    id="filterShift">
-                                    <option value="all">Qualquer Turno</option>
-                                    <option value="Noite">Noite (18:40 - 22:20)</option>
-                                    <option value="Sábado">Sábados (Integral)</option>
-                                    <option value="Manhã">Manhã</option>
-                                </select>
-                            </div>
-                            <!-- Reset Button -->
-                            <button
-                                class="p-2 text-on-surface-variant hover:text-on-surface rounded-lg hover:bg-surface-container transition-colors"
-                                onclick="resetFilters()" title="Limpar Filtros" type="button">
-                                <span class="material-symbols-outlined text-[20px]">filter_alt_off</span>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-                <!-- Main Grid: Volunteers Table & Quick Stats -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
-                    <!-- Table Header Info Bar -->
-                    <div
-                        class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm">
-                        <div class="flex items-center gap-space-xs">
-                            <span class="font-title-md text-title-md text-primary font-semibold">Quadro Docente
-                                Vigente</span>
-                            <span
-                                class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm font-semibold">38
-                                registros</span>
-                        </div>
-                        <div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm">
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
-                                <span>Dentro do limite semanal (RN08)</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-2.5 h-2.5 rounded-full bg-error"></span>
-                                <span>Acima da capacidade pactuada</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Data Table Container -->
-                    <div class="w-full overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr
-                                    class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
-                                    <th class="py-space-sm px-space-md">Professor Voluntário</th>
-                                    <th class="py-space-sm px-space-md">Disciplinas Aptas (RF03)</th>
-                                    <th class="py-space-sm px-space-md">Disponibilidade Declarada (RF04)</th>
-                                    <th class="py-space-sm px-space-md">Carga / Teto Semanal (RN08)</th>
-                                    <th class="py-space-sm px-space-md">Status (RN06)</th>
-                                    <th class="py-space-sm px-space-md text-right">Ações Rápidas</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-surface-container font-body-md text-body-md text-on-surface">
-                                <!-- Row 1: Camila Duarte -->
-                                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex items-center gap-space-sm">
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-primary-container text-on-primary font-title-md text-title-md flex items-center justify-center font-bold shadow-sm">
-                                                CD
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <div class="flex items-center gap-1">
-                                                    <span
-                                                        class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-primary transition-colors">Profª.
-                                                        Dra. Camila Duarte</span>
-                                                    <span class="material-symbols-outlined text-[16px] text-secondary"
-                                                        title="Termo de Voluntariado Ativo">verified</span>
-                                                </div>
-                                                <span
-                                                    class="font-label-sm text-label-sm text-on-surface-variant">camila.duarte@usp.br
-                                                    • (11) 98452-9901</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-wrap gap-1 max-w-xs">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">Matemática
-                                                I (Álgebra)</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">Física
-                                                Moderna</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div
-                                            class="flex items-center gap-1 font-code-sm text-code-sm text-on-surface-variant">
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Seg
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Qua
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">Sáb
-                                                (M)</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-col gap-1 w-36">
-                                            <div class="flex justify-between font-label-sm text-label-sm font-medium">
-                                                <span class="text-secondary font-semibold">4 / 4 aulas</span>
-                                                <span class="text-on-surface-variant">100%</span>
-                                            </div>
-                                            <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                                                <div class="bg-secondary h-full rounded-full" style="width: 100%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/40 text-primary font-label-sm text-label-sm font-semibold">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ativo
-                                        </span>
-                                    </td>
-                                    <td class="py-space-md px-space-md text-right">
-                                        <div class="flex items-center justify-end gap-1">
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Camila Duarte')"
-                                                title="Ficha &amp; Disponibilidade" type="button">
-                                                <span
-                                                    class="material-symbols-outlined text-[18px]">calendar_clock</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Camila Duarte')" title="Editar Perfil"
-                                                type="button">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"
-                                                title="Inativar Voluntário" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">toggle_on</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Row 2: Marcus Vinicius (Sobrecarga Warning) -->
-                                <tr
-                                    class="hover:bg-surface-container-low/60 transition-colors group bg-error-container/10">
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex items-center gap-space-sm">
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary font-title-md text-title-md flex items-center justify-center font-bold shadow-sm">
-                                                MV
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <div class="flex items-center gap-1">
-                                                    <span
-                                                        class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-primary transition-colors">Marcus
-                                                        Vinicius Nogueira</span>
-                                                    <span class="material-symbols-outlined text-[16px] text-error"
-                                                        title="Sobrecarga: Acima do teto">warning</span>
-                                                </div>
-                                                <span
-                                                    class="font-label-sm text-label-sm text-on-surface-variant">marcus.v@gmail.com
-                                                    • (11) 97103-8842</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-wrap gap-1 max-w-xs">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">História
-                                                Geral</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">História
-                                                do Brasil</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">Sociologia</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div
-                                            class="flex items-center gap-1 font-code-sm text-code-sm text-on-surface-variant">
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Ter
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Qui
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Sex
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Sáb
-                                                (T)</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-col gap-1 w-36">
-                                            <div class="flex justify-between font-label-sm text-label-sm font-medium">
-                                                <span class="text-error font-semibold">7 / 5 aulas</span>
-                                                <span class="text-error font-semibold">140%</span>
-                                            </div>
-                                            <div class="w-full bg-error-container h-1.5 rounded-full overflow-hidden">
-                                                <div class="bg-error h-full rounded-full" style="width: 100%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/40 text-primary font-label-sm text-label-sm font-semibold">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ativo
-                                        </span>
-                                    </td>
-                                    <td class="py-space-md px-space-md text-right">
-                                        <div class="flex items-center justify-end gap-1">
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Marcus Vinicius Nogueira')"
-                                                title="Ficha &amp; Disponibilidade" type="button">
-                                                <span
-                                                    class="material-symbols-outlined text-[18px]">calendar_clock</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Marcus Vinicius Nogueira')"
-                                                title="Editar Perfil" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"
-                                                title="Inativar Voluntário" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">toggle_on</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Row 3: Aline Vasconcelos -->
-                                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex items-center gap-space-sm">
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container font-title-md text-title-md flex items-center justify-center font-bold shadow-sm">
-                                                AV
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <div class="flex items-center gap-1">
-                                                    <span
-                                                        class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-primary transition-colors">Profª.
-                                                        Aline Vasconcelos</span>
-                                                    <span
-                                                        class="material-symbols-outlined text-[16px] text-secondary">verified</span>
-                                                </div>
-                                                <span
-                                                    class="font-label-sm text-label-sm text-on-surface-variant">aline.redacao@cursinho.org
-                                                    • (11) 99120-4419</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-wrap gap-1 max-w-xs">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">Redação
-                                                Dissertativa</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">Gramática
-                                                / Texto</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div
-                                            class="flex items-center gap-1 font-code-sm text-code-sm text-on-surface-variant">
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Sex
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Sáb
-                                                (M/T)</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-col gap-1 w-36">
-                                            <div class="flex justify-between font-label-sm text-label-sm font-medium">
-                                                <span class="text-secondary font-semibold">3 / 4 aulas</span>
-                                                <span class="text-on-surface-variant">75%</span>
-                                            </div>
-                                            <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                                                <div class="bg-secondary h-full rounded-full" style="width: 75%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/40 text-primary font-label-sm text-label-sm font-semibold">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ativo
-                                        </span>
-                                    </td>
-                                    <td class="py-space-md px-space-md text-right">
-                                        <div class="flex items-center justify-end gap-1">
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Aline Vasconcelos')"
-                                                title="Ficha &amp; Disponibilidade" type="button">
-                                                <span
-                                                    class="material-symbols-outlined text-[18px]">calendar_clock</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Aline Vasconcelos')" title="Editar Perfil"
-                                                type="button">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"
-                                                title="Inativar Voluntário" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">toggle_on</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Row 4: Rodrigo Bertolucci (Inativo RN06) -->
-                                <tr class="hover:bg-surface-container-low/60 transition-colors group opacity-60">
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex items-center gap-space-sm">
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant font-title-md text-title-md flex items-center justify-center font-bold">
-                                                RB
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <div class="flex items-center gap-1">
-                                                    <span
-                                                        class="font-title-md text-title-md text-on-surface font-semibold line-through">Rodrigo
-                                                        Bertolucci</span>
-                                                    <span
-                                                        class="font-label-sm text-label-sm text-on-surface-variant">(Pausa
-                                                        Mestrado)</span>
-                                                </div>
-                                                <span
-                                                    class="font-label-sm text-label-sm text-on-surface-variant">r.bertolucci@unicamp.br
-                                                    • (19) 98111-2090</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-wrap gap-1 max-w-xs">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Química
-                                                Orgânica</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Físico-Química</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <span
-                                            class="font-label-sm text-label-sm text-on-surface-variant italic">Bloqueado
-                                            para grade semanal</span>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-col gap-1 w-36">
-                                            <div
-                                                class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
-                                                <span>0 / 0 aulas</span>
-                                                <span>0%</span>
-                                            </div>
-                                            <div class="w-full bg-surface-container h-1.5 rounded-full"></div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <span
-                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
-                                            Inativo (RN06)
-                                        </span>
-                                    </td>
-                                    <td class="py-space-md px-space-md text-right">
-                                        <div class="flex items-center justify-end gap-1">
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Rodrigo Bertolucci')" title="Ver Histórico"
-                                                type="button">
-                                                <span class="material-symbols-outlined text-[18px]">history</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-primary transition-colors"
-                                                title="Reativar Voluntário" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">toggle_off</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Row 5: Juliana Prado -->
-                                <tr class="hover:bg-surface-container-low/60 transition-colors group">
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex items-center gap-space-sm">
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-primary-fixed-dim text-on-primary-fixed font-title-md text-title-md flex items-center justify-center font-bold shadow-sm">
-                                                JP
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <div class="flex items-center gap-1">
-                                                    <span
-                                                        class="font-title-md text-title-md text-on-surface font-semibold group-hover:text-primary transition-colors">Juliana
-                                                        Prado Simões</span>
-                                                    <span
-                                                        class="material-symbols-outlined text-[16px] text-secondary">verified</span>
-                                                </div>
-                                                <span
-                                                    class="font-label-sm text-label-sm text-on-surface-variant">juliana.bio@educapop.org
-                                                    • (11) 98834-1122</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-wrap gap-1 max-w-xs">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">Biologia
-                                                Celular</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-semibold">Genética
-                                                &amp; Evolução</span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm">Ecologia</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div
-                                            class="flex items-center gap-1 font-code-sm text-code-sm text-on-surface-variant">
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Seg
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Qua
-                                                (N)</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary font-semibold">Qui
-                                                (N)</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <div class="flex flex-col gap-1 w-36">
-                                            <div class="flex justify-between font-label-sm text-label-sm font-medium">
-                                                <span class="text-secondary font-semibold">2 / 4 aulas</span>
-                                                <span class="text-on-surface-variant">50%</span>
-                                            </div>
-                                            <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                                                <div class="bg-secondary h-full rounded-full" style="width: 50%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-space-md px-space-md">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/40 text-primary font-label-sm text-label-sm font-semibold">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ativo
-                                        </span>
-                                    </td>
-                                    <td class="py-space-md px-space-md text-right">
-                                        <div class="flex items-center justify-end gap-1">
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Juliana Prado Simões')"
-                                                title="Ficha &amp; Disponibilidade" type="button">
-                                                <span
-                                                    class="material-symbols-outlined text-[18px]">calendar_clock</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                                                onclick="openDrawer('edit', 'Juliana Prado Simões')"
-                                                title="Editar Perfil" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors"
-                                                title="Inativar Voluntário" type="button">
-                                                <span class="material-symbols-outlined text-[18px]">toggle_on</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Clique nos blocos para marcar a disponibilidade. Clique no nome do dia para marcar ou desmarcar o dia inteiro.</p>
+                    <div class="bg-surface-container-low rounded-xl p-space-md overflow-x-auto">
+                        <table class="w-full text-center border-separate border-spacing-1.5">
+                            <thead><tr class="font-label-sm text-label-sm text-on-surface-variant uppercase">
+                                <th class="py-1 px-2 text-left font-semibold">Aula</th>
+                                ${dias.map((d) => `<th class="py-1 px-1 font-semibold"><button type="button" data-dia="${d}" class="px-2 py-0.5 rounded hover:bg-surface-container-high uppercase">${DIAS[d]}</button></th>`).join('')}
+                            </tr></thead>
+                            <tbody>
+                            ${Array.from({ length: linhas }, (_, i) => i + 1).map((ordem) => `<tr>
+                                <td class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1 whitespace-nowrap">${ordem}ª aula</td>
+                                ${dias.map((d) => {
+                                    const h = celula(d, ordem);
+                                    if (!h) return '<td><div class="w-full h-10 rounded bg-surface-container/40"></div></td>';
+                                    return `<td><button type="button" data-h="${h.id}" data-d="${d}" aria-pressed="${disp.has(h.id)}" title="${App.DIAS_LONGOS[d]} ${h.inicio}–${h.fim}"
+                                        class="w-full min-w-[64px] h-10 rounded font-code-sm text-code-sm transition-all active:scale-95"></button></td>`;
+                                }).join('')}
+                            </tr>`).join('')}
                             </tbody>
                         </table>
                     </div>
-                    <!-- Table Footer / Pagination -->
-                    <div
-                        class="px-space-lg py-space-sm bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-sm">
-                        <div class="font-body-sm text-body-sm text-on-surface-variant">
-                            Mostrando <span class="font-medium text-on-surface">1 a 5</span> de <span
-                                class="font-medium text-on-surface">38</span> voluntários cadastrados
-                        </div>
-                        <div class="flex items-center gap-space-xs">
-                            <button
-                                class="px-space-sm py-1 bg-surface-container rounded font-label-md text-label-md text-on-surface-variant disabled:opacity-40"
-                                disabled="" type="button">
-                                Anterior
-                            </button>
-                            <button
-                                class="w-8 h-8 rounded bg-primary-container text-on-primary font-title-md text-title-md flex items-center justify-center font-bold"
-                                type="button">1</button>
-                            <button
-                                class="w-8 h-8 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-title-md flex items-center justify-center transition-colors"
-                                type="button">2</button>
-                            <button
-                                class="w-8 h-8 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-title-md text-title-md flex items-center justify-center transition-colors"
-                                type="button">3</button>
-                            <button
-                                class="px-space-sm py-1 bg-surface-container hover:bg-surface-container-high rounded font-label-md text-label-md text-on-surface transition-colors"
-                                type="button">
-                                Próxima
-                            </button>
-                        </div>
-                    </div>
+                    <span id="contaDisp" class="font-label-sm text-label-sm text-on-surface-variant"></span>
                 </div>
-                <!-- Real-world Impact Notice Box -->
-                <section
-                    class="bg-primary-container/10 rounded-xl p-space-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
-                    <div class="flex items-center gap-space-md">
-                        <div
-                            class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-[28px]">volunteer_activism</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <h4 class="font-headline-sm text-headline-sm text-primary">Diretrizes de Cuidado com o
-                                Voluntário (RN08)</h4>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant max-w-3xl">
-                                Nossos professores dedicam tempo livre sem remuneração. O sistema bloqueia alocações que
-                                excedam o limite semanal estipulado individualmente na ficha. Mantenha os contatos de
-                                WhatsApp atualizados para substituições emergenciais.
-                            </p>
-                        </div>
+
+                <div class="flex flex-col gap-space-md p-space-md bg-surface-container-low rounded-xl">
+                    <div class="flex items-center gap-space-xs"><span class="${cls.chipRegra}">RF15 & RN08</span>
+                        <h3 class="font-title-md text-title-md text-on-surface font-semibold">4. Carga semanal máxima</h3></div>
+                    <div class="flex items-center gap-space-sm flex-wrap">
+                        <input name="limite_aulas" type="number" min="1" max="40" value="${v?.limite_aulas ?? 4}"
+                            class="w-24 h-10 px-space-md bg-surface-container-lowest rounded-lg font-title-md text-title-md text-primary font-bold focus:outline-none focus:ring-1 focus:ring-primary text-center shadow-inner" />
+                        <span class="font-body-sm text-body-sm text-on-surface-variant">aulas por semana (o sistema avisa quando uma alocação passar disso)</span>
                     </div>
-                    <div class="flex items-center gap-space-xs shrink-0">
-                        <button
-                            class="px-space-md py-space-sm bg-surface-container-lowest text-primary hover:bg-surface-container rounded-lg font-title-md text-title-md shadow-sm transition-all"
-                            type="button">
-                            Ver Regimento Interno
-                        </button>
-                    </div>
-                </section>
-                <!-- Side Drawer Backdrop -->
-                <div class="fixed inset-0 bg-on-surface/40 backdrop-blur-xs z-50 hidden transition-opacity opacity-0"
-                    id="drawerBackdrop" onclick="closeDrawer()"></div>
-                <!-- Detailed Slide-Over Drawer: Ficha do Professor & Matriz de Disponibilidade -->
-                <aside
-                    class="fixed top-0 right-0 h-full w-full max-w-3xl bg-surface-container-lowest shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between overflow-hidden"
-                    id="volunteerDrawer">
-                    <!-- Drawer Header -->
-                    <div
-                        class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between shrink-0">
-                        <div class="flex flex-col">
-                            <div class="flex items-center gap-space-xs">
-                                <span class="material-symbols-outlined text-primary text-[22px]">badge</span>
-                                <h2 class="font-headline-lg text-headline-lg text-primary" id="drawerTitle">Ficha do
-                                    Professor Voluntário</h2>
-                            </div>
-                            <p class="font-label-sm text-label-sm text-on-surface-variant">Cadastro integrado de dados,
-                                matriz de turnos livres e carga máxima</p>
-                        </div>
-                        <button
-                            class="p-space-xs rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
-                            onclick="closeDrawer()" type="button">
-                            <span class="material-symbols-outlined text-[24px]">close</span>
-                        </button>
-                    </div>
-                    <!-- Drawer Content (Scrollable) -->
-                    <div class="flex-1 overflow-y-auto px-space-lg py-space-lg flex flex-col gap-space-xl">
-                        <!-- Section 1: Personal & Contact Info -->
-                        <div class="flex flex-col gap-space-md">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-space-xs">
-                                    <span
-                                        class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">RF01
-                                        &amp; RF02</span>
-                                    <h3 class="font-title-md text-title-md text-on-surface font-semibold">1. Dados
-                                        Pessoais &amp; Contato Direto</h3>
-                                </div>
-                                <span class="font-label-sm text-label-sm text-secondary font-medium">Cadastrado em
-                                    14/01/2025</span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
-                                <div class="flex flex-col gap-1">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">Nome
-                                        Completo</label>
-                                    <input
-                                        class="h-10 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner"
-                                        id="drawerInputName" type="text" value="Camila Duarte de Souza" />
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">E-mail
-                                        Principal</label>
-                                    <input
-                                        class="h-10 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner"
-                                        type="email" value="camila.duarte@usp.br" />
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">WhatsApp
-                                        (Notificações de Grade)</label>
-                                    <div class="relative">
-                                        <span
-                                            class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-[20px]">chat</span>
-                                        <input
-                                            class="w-full h-10 pl-10 pr-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner"
-                                            type="tel" value="(11) 98452-9901" />
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">Formação
-                                        Acadêmica &amp; Titulação</label>
-                                    <input
-                                        class="h-10 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner"
-                                        type="text" value="Doutoranda em Matemática Pura - IME/USP" />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Section 2: Disciplinas Aptas (RF03 & RN01) -->
-                        <div class="flex flex-col gap-space-md">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-space-xs">
-                                    <span
-                                        class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">RF03
-                                        &amp; RN01</span>
-                                    <h3 class="font-title-md text-title-md text-on-surface font-semibold">2. Habilitação
-                                        de Disciplinas</h3>
-                                </div>
-                                <span class="font-label-sm text-label-sm text-on-surface-variant">Selecione as frentes
-                                    autorizadas</span>
-                            </div>
-                            <div class="p-space-md bg-surface-container-low rounded-xl flex flex-col gap-space-sm">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
-                                    <label
-                                        class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <input checked="" class="w-4 h-4 text-primary rounded focus:ring-primary"
-                                                type="checkbox" />
-                                            <span
-                                                class="font-title-md text-title-md text-on-surface font-medium">Matemática
-                                                I (Álgebra)</span>
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded bg-primary-fixed text-primary font-label-sm text-label-sm font-semibold">Prioridade
-                                            Alta</span>
-                                    </label>
-                                    <label
-                                        class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <input checked="" class="w-4 h-4 text-primary rounded focus:ring-primary"
-                                                type="checkbox" />
-                                            <span
-                                                class="font-title-md text-title-md text-on-surface font-medium">Matemática
-                                                II (Geometria)</span>
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">Secundária</span>
-                                    </label>
-                                    <label
-                                        class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <input checked="" class="w-4 h-4 text-primary rounded focus:ring-primary"
-                                                type="checkbox" />
-                                            <span class="font-title-md text-title-md text-on-surface font-medium">Física
-                                                Moderna &amp; Mecânica</span>
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">Secundária</span>
-                                    </label>
-                                    <label
-                                        class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <input class="w-4 h-4 text-primary rounded focus:ring-primary"
-                                                type="checkbox" />
-                                            <span
-                                                class="font-title-md text-title-md text-on-surface font-medium">Química
-                                                Geral</span>
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Inapto</span>
-                                    </label>
-                                    <label
-                                        class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <input class="w-4 h-4 text-primary rounded focus:ring-primary"
-                                                type="checkbox" />
-                                            <span
-                                                class="font-title-md text-title-md text-on-surface font-medium">Estatística
-                                                Aplicada</span>
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Inapto</span>
-                                    </label>
-                                    <label
-                                        class="flex items-center justify-between p-space-sm bg-surface-container-lowest rounded-lg cursor-pointer hover:bg-surface-container transition-all">
-                                        <div class="flex items-center gap-2">
-                                            <input class="w-4 h-4 text-primary rounded focus:ring-primary"
-                                                type="checkbox" />
-                                            <span
-                                                class="font-title-md text-title-md text-on-surface font-medium">Raciocínio
-                                                Lógico</span>
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Inapto</span>
-                                    </label>
-                                </div>
-                                <span class="font-label-sm text-label-sm text-on-surface-variant mt-1">
-                                    * Conforme a RN01, o motor de grade só permitirá agendamentos nas disciplinas
-                                    assinaladas acima.
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-space-md">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                <div class="flex items-center gap-space-xs">
-                                    <span
-                                        class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">RF04
-                                        &amp; RN02</span>
-                                    <h3 class="font-title-md text-title-md text-on-surface font-semibold">3. Matriz
-                                        Interativa de Horários Livres</h3>
-                                </div>
-                                <div
-                                    class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
-                                    <div class="flex items-center gap-1">
-                                        <span class="w-3 h-3 rounded bg-secondary"></span> Disponível
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <span class="w-3 h-3 rounded bg-surface-container-high"></span> Bloqueado
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                Clique nos blocos para alternar a disponibilidade semanal do professor. Horários em
-                                verde serão elegíveis para montagem automática da grade.
-                            </p>
-                            <!-- Availability Schedule Grid -->
-                            <div class="bg-surface-container-low rounded-xl p-space-md overflow-x-auto">
-                                <table class="w-full text-center border-separate border-spacing-1.5">
-                                    <thead>
-                                        <tr class="font-label-sm text-label-sm text-on-surface-variant uppercase">
-                                            <th class="py-1 px-2 text-left font-semibold">Bloco / Turno</th>
-                                            <th class="py-1 px-2 font-semibold">Seg</th>
-                                            <th class="py-1 px-2 font-semibold">Ter</th>
-                                            <th class="py-1 px-2 font-semibold">Qua</th>
-                                            <th class="py-1 px-2 font-semibold">Qui</th>
-                                            <th class="py-1 px-2 font-semibold">Sex</th>
-                                            <th class="py-1 px-2 font-semibold">Sáb</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Manhã Sábado -->
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                08:00 - 10:00 (M1)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold transition-transform active:scale-95 shadow-sm"
-                                                    onclick="toggleCell(this)" type="button">Livre</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                10:15 - 12:15 (M2)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold transition-transform active:scale-95 shadow-sm"
-                                                    onclick="toggleCell(this)" type="button">Livre</button></td>
-                                        </tr>
-                                        <!-- Tarde Sábado -->
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                13:30 - 15:30 (T1)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                        </tr>
-                                        <!-- Noite Regular (Segunda a Sexta) -->
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                18:40 - 19:30 (N1)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold transition-transform active:scale-95 shadow-sm"
-                                                    onclick="toggleCell(this)" type="button">Livre</button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold transition-transform active:scale-95 shadow-sm"
-                                                    onclick="toggleCell(this)" type="button">Livre</button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                19:30 - 20:20 (N2)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold transition-transform active:scale-95 shadow-sm"
-                                                    onclick="toggleCell(this)" type="button">Livre</button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold transition-transform active:scale-95 shadow-sm"
-                                                    onclick="toggleCell(this)" type="button">Livre</button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                20:40 - 21:30 (N3)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="text-left font-label-sm text-label-sm text-on-surface font-medium py-1">
-                                                21:30 - 22:20 (N4)</td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                            <td><button
-                                                    class="w-full h-8 rounded bg-surface-container-high hover:opacity-80 transition-opacity"
-                                                    onclick="toggleCell(this)" type="button"></button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- Section 4: RN06 & RN08 (Limite de Aulas & Chave de Ativação) -->
-                        <div class="flex flex-col gap-space-md p-space-md bg-surface-container-low rounded-xl">
-                            <div class="flex items-center gap-space-xs">
-                                <span
-                                    class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">RN06
-                                    &amp; RN08</span>
-                                <h3 class="font-title-md text-title-md text-on-surface font-semibold">4. Carga Semanal
-                                    Máxima &amp; Situação do Cadastro</h3>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md items-center">
-                                <div class="flex flex-col gap-1">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">Teto Máximo de
-                                        Aulas / Semana (RN08)</label>
-                                    <div class="flex items-center gap-space-sm">
-                                        <input
-                                            class="w-24 h-10 px-space-md bg-surface-container-lowest rounded-lg font-title-md text-title-md text-primary font-bold focus:outline-none focus:ring-1 focus:ring-primary text-center shadow-inner"
-                                            max="10" min="1" type="number" value="4" />
-                                        <span class="font-body-sm text-body-sm text-on-surface-variant">aulas por semana
-                                            (recomendado: 2 a 4)</span>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <label class="font-label-md text-label-md text-on-surface-variant">Situação
-                                        Operacional (RN06)</label>
-                                    <div
-                                        class="flex items-center gap-space-sm bg-surface-container-lowest p-2 rounded-lg">
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input checked="" class="sr-only peer" id="statusToggle" type="checkbox" />
-                                            <div
-                                                class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary">
-                                            </div>
-                                        </label>
-                                        <div class="flex flex-col">
-                                            <span class="font-title-md text-title-md text-on-surface font-semibold"
-                                                id="statusLabel">Professor Ativo</span>
-                                            <span
-                                                class="font-label-sm text-label-sm text-on-surface-variant leading-none">Apto
-                                                a receber aulas na grade</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="p-space-sm rounded-lg bg-surface-container-highest/60 flex items-start gap-space-xs">
-                                <span class="material-symbols-outlined text-[20px] text-primary shrink-0">info</span>
-                                <p class="font-label-sm text-label-sm text-on-surface-variant">
-                                    <strong>Regra RN06:</strong> Caso desativado, o professor permanece no banco de
-                                    dados histórico para auditoria acadêmica, mas nenhuma aula poderá ser alocada ou
-                                    mantida na grade semanal ativa deste semestre.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Drawer Footer Actions -->
-                    <div
-                        class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between shrink-0">
-                        <button
-                            class="px-space-md py-space-sm bg-surface-container rounded-lg font-title-md text-title-md text-on-surface hover:bg-surface-container-high transition-colors"
-                            onclick="closeDrawer()" type="button">
-                            Cancelar
-                        </button>
-                        <div class="flex items-center gap-space-sm">
-                            <button
-                                class="px-space-md py-space-sm bg-primary-container hover:bg-primary text-on-primary rounded-lg font-title-md text-title-md font-medium shadow-md transition-all flex items-center gap-1.5"
-                                onclick="saveVolunteer()" type="button">
-                                <span class="material-symbols-outlined text-[18px]">save</span>
-                                <span>Salvar Alterações</span>
-                            </button>
-                        </div>
-                    </div>
-                </aside>
-            </div>
-            <script>
-                function openDrawer(mode, teacherName = '') {
-                    const backdrop = document.getElementById('drawerBackdrop');
-                    const drawer = document.getElementById('volunteerDrawer');
-                    const title = document.getElementById('drawerTitle');
-                    const inputName = document.getElementById('drawerInputName');
+                    ${v ? `<div class="flex flex-col gap-space-xs">
+                        <span class="${cls.label}">Aulas atribuídas agora (${aulas.length})</span>
+                        ${aulas.length ? `<ul class="flex flex-col gap-1">${aulas.map((a) => `<li class="flex items-center justify-between gap-space-sm p-space-sm bg-surface-container-lowest rounded-lg">
+                            <span class="font-body-sm text-body-sm"><strong>${esc(e.mapa.disc.get(a.disciplina_id).nome)}</strong> · ${esc(App.localAula(e, a))}</span>${App.chipStatus(a.status)}</li>`).join('')}</ul>`
+                        : '<span class="font-body-sm text-body-sm text-on-surface-variant">Nenhuma aula atribuída.</span>'}
+                    </div>` : ''}
+                    ${v && !v.ativo ? `<div class="p-space-sm rounded-lg bg-surface-container-highest/60 flex items-start gap-space-xs">
+                        <span class="material-symbols-outlined text-[20px] text-primary shrink-0">info</span>
+                        <p class="font-label-sm text-label-sm text-on-surface-variant"><strong>Inativo (RN06):</strong> permanece no cadastro para consulta, mas não pode receber aulas. Use o botão de situação na lista para reativar.</p></div>` : ''}
+                </div>
+            </form>`;
 
-                    if (mode === 'novo') {
-                        title.innerText = 'Novo Professor Voluntário';
-                        inputName.value = '';
-                    } else {
-                        title.innerText = 'Ficha de ' + teacherName;
-                        inputName.value = teacherName;
-                    }
+            const el = App.drawer.abrir({
+                icone: v ? 'badge' : 'person_add',
+                titulo: v ? `Ficha de ${v.nome}` : 'Novo professor voluntário',
+                subtitulo: 'Dados, disciplinas habilitadas, horários livres e carga máxima',
+                largura: 'max-w-3xl',
+                corpo,
+                rodape: `<button type="button" data-fechar2 class="${cls.btnNeutro}">Cancelar</button>
+                    <div class="flex items-center gap-space-sm">
+                        ${v ? `<button type="button" id="btnSituacao" class="${v.ativo ? cls.btnNeutro + ' !text-error' : cls.btnNeutro}"><span class="material-symbols-outlined text-[18px]">${v.ativo ? 'person_off' : 'person_check'}</span>${v.ativo ? 'Inativar' : 'Reativar'}</button>` : ''}
+                        <button type="button" id="btnSalvar" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">save</span>Salvar</button>
+                    </div>`,
+            });
 
-                    backdrop.classList.remove('hidden');
-                    setTimeout(() => {
-                        backdrop.classList.remove('opacity-0');
-                        drawer.classList.remove('translate-x-full');
-                    }, 10);
-                }
+            const pintar = (b) => {
+                const on = disp.has(Number(b.dataset.h));
+                b.setAttribute('aria-pressed', on);
+                b.className = `w-full min-w-[64px] h-10 rounded font-code-sm text-code-sm transition-all active:scale-95 ${on
+                    ? 'bg-secondary text-on-secondary font-semibold shadow-sm' : 'bg-surface-container-high text-on-surface-variant hover:opacity-80'}`;
+                b.textContent = e.mapa.hor.get(Number(b.dataset.h)).inicio;
+            };
+            const atualizarConta = () => { $('#contaDisp', el).textContent = `${disp.size} de ${e.horarios.length} horários marcados como livres.`; };
+            $$('[data-h]', el).forEach(pintar);
+            atualizarConta();
+            el.addEventListener('click', (ev) => {
+                const b = ev.target.closest('[data-h]');
+                const d = ev.target.closest('[data-dia]');
+                if (b) {
+                    const id = Number(b.dataset.h);
+                    disp.has(id) ? disp.delete(id) : disp.add(id);
+                    pintar(b);
+                } else if (d) {
+                    const botoes = $$(`[data-d="${d.dataset.dia}"]`, el);
+                    const marcar = !botoes.every((x) => disp.has(Number(x.dataset.h)));
+                    for (const x of botoes) { marcar ? disp.add(Number(x.dataset.h)) : disp.delete(Number(x.dataset.h)); pintar(x); }
+                } else return;
+                atualizarConta();
+            });
+            $('[data-fechar2]', el).onclick = () => App.drawer.fechar();
+            if (v) $('#btnSituacao', el).onclick = (ev) => alternarSituacao(v, ev.currentTarget);
 
-                function closeDrawer() {
-                    const backdrop = document.getElementById('drawerBackdrop');
-                    const drawer = document.getElementById('volunteerDrawer');
+            $('#btnSalvar', el).onclick = (ev) => App.acao(ev.currentTarget, async () => {
+                const f = $('#ficha', el);
+                if (!f.nome.value.trim()) { f.nome.focus(); throw new Error('Informe o nome do voluntário.'); }
+                const corpo = {
+                    nome: f.nome.value, email: f.email.value, telefone: f.telefone.value, observacoes: f.observacoes.value,
+                    limite_aulas: Number(f.limite_aulas.value),
+                    disciplinas: $$('input[name=disc]:checked', f).map((c) => Number(c.value)),
+                    disponibilidade: [...disp],
+                };
+                const r = v ? await api('PUT', `/api/voluntarios/${v.id}`, corpo) : await api('POST', '/api/voluntarios', corpo);
+                App.drawer.fechar();
+                await App.recarregar();
+                if (r.conflitos) App.toast(`Ficha salva, mas ${r.conflitos} aula(s) desta pessoa agora estão em conflito. Veja em Visualização & Conflitos.`, 'aviso');
+                else App.toast(v ? 'Ficha atualizada.' : 'Voluntário cadastrado.');
+            });
+        }
 
-                    drawer.classList.add('translate-x-full');
-                    backdrop.classList.add('opacity-0');
-                    setTimeout(() => {
-                        backdrop.classList.add('hidden');
-                    }, 300);
-                }
-
-                function toggleCell(button) {
-                    if (button.classList.contains('bg-secondary')) {
-                        button.classList.remove('bg-secondary', 'text-on-secondary', 'font-semibold', 'shadow-sm');
-                        button.classList.add('bg-surface-container-high');
-                        button.innerText = '';
-                    } else {
-                        button.classList.remove('bg-surface-container-high');
-                        button.classList.add('bg-secondary', 'text-on-secondary', 'font-semibold', 'shadow-sm');
-                        button.innerText = 'Livre';
-                    }
-                }
-
-                const statusToggle = document.getElementById('statusToggle');
-                const statusLabel = document.getElementById('statusLabel');
-                if (statusToggle) {
-                    statusToggle.addEventListener('change', function () {
-                        if (this.checked) {
-                            statusLabel.innerText = 'Professor Ativo';
-                            statusLabel.classList.remove('text-on-surface-variant');
-                            statusLabel.classList.add('text-on-surface');
-                        } else {
-                            statusLabel.innerText = 'Professor Inativo (RN06)';
-                            statusLabel.classList.add('text-on-surface-variant');
-                        }
-                    });
-                }
-
-                function resetFilters() {
-                    document.getElementById('searchInput').value = '';
-                    document.getElementById('filterSubject').value = 'all';
-                    document.getElementById('filterStatus').value = 'all';
-                    document.getElementById('filterShift').value = 'all';
-                }
-
-                function saveVolunteer() {
-                    closeDrawer();
-                }
-            </script>
-        </main>
-    </div>
+        App.start({
+            ativo: 'index.html',
+            render,
+            depois(e) {
+                const id = Number(App.params.get('voluntario'));
+                if (id && e.mapa.vol.has(id)) abrirFicha(e.mapa.vol.get(id));
+                if (App.params.get('novo')) abrirFicha(null);
+            },
+        });
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,52 @@
+// Tokens da identidade visual (mesmos do protótipo index.html) + tons de "aviso" para aulas sem professor.
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'on-error-container': '#93000a', 'surface-tint': '#2d6a48', 'on-secondary-fixed': '#002113',
+        'surface-container': '#eaedff', 'on-tertiary-container': '#68bcff', primary: '#003820',
+        'primary-fixed': '#b0f1c7', 'tertiary-fixed': '#cce5ff', 'on-surface-variant': '#404942',
+        'on-error': '#ffffff', 'surface-bright': '#faf8ff', background: '#faf8ff', 'secondary-fixed': '#6ffbbe',
+        'on-tertiary': '#ffffff', 'outline-variant': '#c0c9c0', 'on-surface': '#131b2e',
+        'surface-container-lowest': '#ffffff', 'surface-container-highest': '#dae2fd', surface: '#faf8ff',
+        outline: '#707971', 'on-primary-container': '#84c39b', 'surface-container-high': '#e2e7ff',
+        'primary-container': '#0f5132', 'secondary-fixed-dim': '#4edea3', 'on-primary': '#ffffff',
+        'on-secondary-fixed-variant': '#005236', tertiary: '#003351', 'on-secondary-container': '#00714d',
+        'inverse-primary': '#95d4ac', 'error-container': '#ffdad6', secondary: '#006c49',
+        'on-primary-fixed': '#002111', 'on-tertiary-fixed': '#001d31', 'secondary-container': '#6cf8bb',
+        'surface-container-low': '#f2f3ff', 'inverse-on-surface': '#eef0ff', 'on-secondary': '#ffffff',
+        'tertiary-fixed-dim': '#93ccff', 'on-primary-fixed-variant': '#0f5132', 'surface-variant': '#dae2fd',
+        'primary-fixed-dim': '#95d4ac', error: '#ba1a1a', 'inverse-surface': '#283044',
+        'on-tertiary-fixed-variant': '#004b73', 'surface-dim': '#d2d9f4', 'tertiary-container': '#004b74',
+        'on-background': '#131b2e',
+        warning: '#8a5100', 'warning-container': '#ffdcbe', 'on-warning-container': '#2c1600',
+      },
+      borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem', full: '0.75rem' },
+      spacing: {
+        'gutter-lg': '1.5rem', margin: '1rem', 'space-lg': '1rem', 'space-xl': '1.5rem', gutter: '1rem',
+        'margin-md': '1.5rem', 'margin-lg': '2rem', 'space-2xs': '0.125rem', 'space-md': '0.75rem',
+        'space-sm': '0.5rem', 'space-xs': '0.25rem', 'space-2xl': '2rem',
+      },
+      fontFamily: {
+        'code-sm': ['JetBrains Mono'], 'body-lg': ['Inter'], 'display-lg': ['Plus Jakarta Sans'],
+        'headline-md': ['Plus Jakarta Sans'], 'label-sm': ['Inter'], 'label-md': ['Inter'],
+        'headline-lg': ['Plus Jakarta Sans'], 'title-md': ['Inter'], 'headline-sm': ['Plus Jakarta Sans'],
+        'body-sm': ['Inter'], 'body-md': ['Inter'],
+      },
+      fontSize: {
+        'code-sm': ['12px', { lineHeight: '16px', fontWeight: '400' }],
+        'body-lg': ['15px', { lineHeight: '24px', fontWeight: '400' }],
+        'display-lg': ['32px', { lineHeight: '40px', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'headline-md': ['20px', { lineHeight: '28px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.02em', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.015em', fontWeight: '600' }],
+        'title-md': ['15px', { lineHeight: '22px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'headline-sm': ['16px', { lineHeight: '24px', letterSpacing: '-0.005em', fontWeight: '600' }],
+        'body-sm': ['13px', { lineHeight: '18px', fontWeight: '400' }],
+        'body-md': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+      },
+    },
+  },
+};

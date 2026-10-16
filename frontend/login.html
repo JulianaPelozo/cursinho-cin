@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Entrar · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased pronto">
+    <main class="min-h-screen grid lg:grid-cols-2">
+        <section class="hidden lg:flex flex-col justify-between bg-primary-container text-on-primary p-space-2xl relative overflow-hidden">
+            <div class="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-primary/40 pointer-events-none"></div>
+            <div class="absolute right-24 top-24 w-40 h-40 rounded-full bg-secondary/30 pointer-events-none"></div>
+            <div class="flex items-center gap-space-sm relative">
+                <div class="w-10 h-10 rounded-lg bg-on-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-headline-sm text-headline-sm">Grade Solidária</span>
+                    <span class="font-label-sm text-label-sm text-on-primary-container">EducaPop · Gestão Popular</span>
+                </div>
+            </div>
+            <div class="relative flex flex-col gap-space-md max-w-md">
+                <span class="font-code-sm text-code-sm tracking-wide text-secondary-fixed-dim">GRADE FECHADA, AULA GARANTIDA</span>
+                <h1 class="font-display-lg text-[40px] leading-[48px] tracking-tight">Organize a semana do cursinho sem planilha e sem susto.</h1>
+                <p class="font-body-lg text-body-lg text-on-primary-container">Cadastre voluntários, monte a grade, veja
+                    conflitos e aulas sem professor na hora e encontre substitutos em poucos cliques.</p>
+            </div>
+            <div class="relative flex gap-space-lg font-label-md text-label-md text-on-primary-container">
+                <span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">verified_user</span>Acesso restrito à coordenação</span>
+                <span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">lock</span>Dados dos voluntários protegidos</span>
+            </div>
+        </section>
+
+        <section class="flex items-center justify-center p-space-xl">
+            <form id="formLogin" class="w-full max-w-sm flex flex-col gap-space-lg" novalidate>
+                <div class="flex flex-col gap-space-xs">
+                    <div class="lg:hidden w-11 h-11 rounded-lg bg-primary-container text-on-primary flex items-center justify-center mb-space-sm">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                    </div>
+                    <h2 class="font-headline-lg text-headline-lg text-primary">Entrar na coordenação</h2>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Use o acesso da coordenação do cursinho.</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label for="login" class="font-label-md text-label-md text-on-surface-variant">Usuário</label>
+                    <input id="login" name="login" autocomplete="username" required autofocus
+                        class="h-11 px-space-md bg-surface-container-low rounded-lg font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" />
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label for="senha" class="font-label-md text-label-md text-on-surface-variant">Senha</label>
+                    <div class="relative">
+                        <input id="senha" name="senha" type="password" autocomplete="current-password" required
+                            class="w-full h-11 pl-space-md pr-11 bg-surface-container-low rounded-lg font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" />
+                        <button type="button" id="verSenha" aria-label="Mostrar senha"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-on-surface-variant hover:text-primary">
+                            <span class="material-symbols-outlined text-[20px]">visibility</span></button>
+                    </div>
+                </div>
+                <p id="erro" role="alert" class="hidden px-space-sm py-space-xs rounded-lg bg-error-container text-on-error-container font-body-sm text-body-sm"></p>
+                <button type="submit" id="entrar"
+                    class="h-11 inline-flex items-center justify-center gap-space-xs bg-primary-container hover:bg-primary text-on-primary font-title-md text-title-md rounded-lg shadow-md transition-all disabled:opacity-60">
+                    <span class="material-symbols-outlined text-[18px]">login</span> Entrar
+                </button>
+                <p class="font-label-sm text-label-sm text-on-surface-variant text-center">Demonstração: usuário
+                    <code class="font-code-sm">rosivaldo</code> · senha <code class="font-code-sm">grade2026</code></p>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById('formLogin');
+        const erro = document.getElementById('erro');
+        document.getElementById('verSenha').onclick = (ev) => {
+            const campo = document.getElementById('senha');
+            campo.type = campo.type === 'password' ? 'text' : 'password';
+            ev.currentTarget.firstElementChild.textContent = campo.type === 'password' ? 'visibility' : 'visibility_off';
+        };
+        form.onsubmit = async (ev) => {
+            ev.preventDefault();
+            erro.classList.add('hidden');
+            const botao = document.getElementById('entrar');
+            botao.disabled = true;
+            try {
+                const resp = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login: form.login.value.trim().toLowerCase(), senha: form.senha.value }),
+                });
+                const dados = await resp.json();
+                if (!resp.ok) throw new Error(dados.erro || 'Não foi possível entrar.');
+                location.href = 'painel.html';
+            } catch (e) {
+                erro.textContent = e.message === 'Failed to fetch' ? 'Servidor indisponível.' : e.message;
+                erro.classList.remove('hidden');
+                botao.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>

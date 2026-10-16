@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Turmas & Horários · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <div id="cabecalho"></div>
+
+            <section class="flex flex-col gap-space-md">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-headline-md text-headline-md text-primary">Turmas</h2>
+                    <button type="button" id="novaTurma" class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-primary-container hover:bg-primary text-on-primary font-title-md text-title-md rounded-lg shadow-md transition-all">
+                        <span class="material-symbols-outlined text-[18px]">add</span>Nova turma</button>
+                </div>
+                <div id="turmas" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-space-md"></div>
+            </section>
+
+            <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+                    <div class="flex flex-col">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Horários das aulas</span>
+                        <span class="font-body-sm text-body-sm text-on-surface-variant">Os mesmos horários valem para todas as turmas. Configure uma vez por semestre.</span>
+                    </div>
+                    <button type="button" id="novoHorario" class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-surface-container-lowest text-on-surface font-title-md text-title-md rounded-lg shadow-sm hover:bg-surface-container transition-all">
+                        <span class="material-symbols-outlined text-[18px] text-on-surface-variant">more_time</span>Novo horário</button>
+                </div>
+                <div id="horarios" class="p-space-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-space-md"></div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const { esc, cls, $, api, DIAS, DIAS_LONGOS } = App;
+
+        function render(e) {
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'MÓDULO 03 • ESTRUTURA',
+                titulo: 'Turmas & Horários',
+                descricao: 'Cadastre as turmas do período letivo e os horários em que acontecem as aulas. Cada aula da grade é um horário de uma turma.',
+            });
+
+            $('#turmas').innerHTML = e.turmas.length ? e.turmas.map((t) => {
+                const pct = t.demanda ? Math.round(t.cobertas / t.demanda * 100) : 0;
+                return `<article class="${cls.card} p-space-md flex flex-col gap-space-md" data-id="${t.id}">
+                    <div class="flex items-start justify-between gap-space-sm">
+                        <div class="flex items-center gap-space-sm">
+                            <div class="w-11 h-11 rounded-xl bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm">${esc(t.nome.replace(/^Turma\s*/i, '').slice(0, 2).toUpperCase() || 'T')}</div>
+                            <div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface">${esc(t.nome)}</span>
+                                <span class="font-label-md text-label-md text-on-surface-variant">${esc(t.descricao || 'Sem descrição')} · ${esc(t.periodo)}</span></div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button type="button" data-acao="editar" class="${cls.btnIcone}" title="Editar"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                            <button type="button" data-acao="remover" class="${cls.btnIcone} hover:!text-error" title="Remover"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between font-label-sm text-label-sm"><span class="text-secondary font-semibold">${t.cobertas} de ${t.demanda} aulas garantidas</span><span class="text-on-surface-variant">${pct}%</span></div>
+                        <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full" style="width:${pct}%"></div></div>
+                    </div>
+                    <div class="flex flex-wrap gap-space-xs font-label-sm text-label-sm">
+                        <span class="px-2 py-0.5 rounded bg-surface-container">${t.na_grade} na grade</span>
+                        ${t.descobertas ? `<span class="px-2 py-0.5 rounded bg-warning-container text-on-warning-container">${t.descobertas} sem professor</span>` : ''}
+                        ${t.conflitos ? `<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container">${t.conflitos} conflito(s)</span>` : ''}
+                    </div>
+                    <a href="grade.html?turma=${t.id}" class="inline-flex items-center gap-1 font-title-md text-title-md text-primary hover:underline self-start">Abrir grade <span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
+                </article>`;
+            }).join('') : `<div class="${cls.card} md:col-span-2 xl:col-span-3">${App.vazio('Nenhuma turma cadastrada.', 'meeting_room')}</div>`;
+
+            const { dias } = App.estrutura(e);
+            const todosDias = [...new Set([1, 2, 3, 4, 5, 6, ...dias])].sort();
+            $('#horarios').innerHTML = todosDias.map((d) => {
+                const hs = e.horarios.filter((h) => h.dia === d);
+                return `<div class="flex flex-col gap-space-xs">
+                    <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-semibold">${DIAS_LONGOS[d]}</span>
+                    ${hs.length ? hs.map((h) => {
+                        const n = e.aulas.filter((a) => a.horario_id === h.id).length;
+                        return `<div class="group flex items-center justify-between gap-1 p-space-sm rounded-lg bg-surface-container-low" data-h="${h.id}">
+                            <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">${h.ordem}ª aula · ${h.duracao_min} min</span>
+                                <span class="font-code-sm text-code-sm text-on-surface font-semibold">${h.inicio} às ${h.fim}</span>
+                                <span class="font-label-sm text-label-sm text-on-surface-variant">${n} aula(s) em turmas</span></div>
+                            <div class="flex flex-col opacity-60 group-hover:opacity-100">
+                                <button type="button" data-acao="editarH" class="${cls.btnIcone} !p-1" title="Editar"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+                                <button type="button" data-acao="removerH" class="${cls.btnIcone} !p-1 hover:!text-error" title="Remover"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+                            </div></div>`;
+                    }).join('') : '<span class="p-space-sm rounded-lg border border-dashed border-outline-variant font-label-sm text-label-sm text-on-surface-variant text-center">Sem aula</span>'}
+                </div>`;
+            }).join('');
+        }
+
+        $('#novaTurma').onclick = () => abrirTurma(null);
+        $('#novoHorario').onclick = () => abrirHorario(null);
+
+        $('#turmas').addEventListener('click', async (ev) => {
+            const b = ev.target.closest('[data-acao]');
+            if (!b) return;
+            const t = App.estado.mapa.turma.get(Number(b.closest('[data-id]').dataset.id));
+            if (b.dataset.acao === 'editar') return abrirTurma(t);
+            const ok = await App.confirmar({
+                titulo: `Remover ${t.nome}?`, perigo: true, icone: 'delete', confirmar: 'Remover turma',
+                mensagem: `As <strong>${t.na_grade} aula(s)</strong> da grade desta turma também serão removidas. Essa ação fica registrada no histórico.`,
+            });
+            if (!ok) return;
+            await App.acao(b, async () => { await api('DELETE', `/api/turmas/${t.id}`); await App.recarregar(); App.toast('Turma removida.'); });
+        });
+
+        $('#horarios').addEventListener('click', async (ev) => {
+            const b = ev.target.closest('[data-acao]');
+            if (!b) return;
+            const h = App.estado.mapa.hor.get(Number(b.closest('[data-h]').dataset.h));
+            if (b.dataset.acao === 'editarH') return abrirHorario(h);
+            const n = App.estado.aulas.filter((a) => a.horario_id === h.id).length;
+            const ok = await App.confirmar({
+                titulo: `Remover ${DIAS[h.dia]} ${h.inicio}–${h.fim}?`, perigo: true, icone: 'delete', confirmar: 'Remover horário',
+                mensagem: n ? `<strong>${n} aula(s)</strong> marcadas neste horário serão removidas da grade, e ele sai da disponibilidade dos voluntários.` : 'O horário sai da disponibilidade dos voluntários.',
+            });
+            if (!ok) return;
+            await App.acao(b, async () => { await api('DELETE', `/api/horarios/${h.id}`); await App.recarregar(); App.toast('Horário removido.'); });
+        });
+
+        function abrirTurma(t) {
+            const periodoPadrao = App.estado.turmas[0]?.periodo || `${new Date().getFullYear()}.${new Date().getMonth() < 6 ? 1 : 2}`;
+            const el = App.drawer.abrir({
+                icone: 'meeting_room', titulo: t ? `Editar ${t.nome}` : 'Nova turma', subtitulo: 'Identificação e período letivo', largura: 'max-w-lg',
+                corpo: `<form id="f" class="flex flex-col gap-space-md" novalidate>
+                    <label class="flex flex-col gap-1"><span class="${cls.label}">Nome ou código *</span><input name="nome" maxlength="60" class="${cls.input}" value="${esc(t?.nome)}" placeholder="Turma C" /></label>
+                    <label class="flex flex-col gap-1"><span class="${cls.label}">Período letivo *</span><input name="periodo" maxlength="20" class="${cls.input}" value="${esc(t?.periodo ?? periodoPadrao)}" placeholder="2026.2" /></label>
+                    <label class="flex flex-col gap-1"><span class="${cls.label}">Descrição</span><input name="descricao" maxlength="120" class="${cls.input}" value="${esc(t?.descricao)}" placeholder="Preparatório Enem" /></label>
+                </form>`,
+                rodape: `<button type="button" data-cancelar class="${cls.btnNeutro}">Cancelar</button><button type="button" id="salvar" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">save</span>Salvar</button>`,
+            });
+            $('[data-cancelar]', el).onclick = () => App.drawer.fechar();
+            $('#salvar', el).onclick = (ev) => App.acao(ev.currentTarget, async () => {
+                const f = $('#f', el);
+                const corpo = { nome: f.nome.value, periodo: f.periodo.value, descricao: f.descricao.value };
+                if (t) await api('PUT', `/api/turmas/${t.id}`, corpo); else await api('POST', '/api/turmas', corpo);
+                App.drawer.fechar();
+                await App.recarregar();
+                App.toast(t ? 'Turma atualizada.' : 'Turma criada.');
+            });
+        }
+
+        function abrirHorario(h) {
+            const el = App.drawer.abrir({
+                icone: 'schedule', titulo: h ? 'Editar horário' : 'Novo horário', subtitulo: 'Horário-padrão de aula, válido para todas as turmas', largura: 'max-w-lg',
+                corpo: `<form id="f" class="flex flex-col gap-space-md" novalidate>
+                    <label class="flex flex-col gap-1"><span class="${cls.label}">Dia da semana *</span>
+                        <select name="dia" class="${cls.input} cursor-pointer">${[1, 2, 3, 4, 5, 6, 7].map((d) => `<option value="${d}" ${h?.dia === d ? 'selected' : ''}>${DIAS_LONGOS[d]}</option>`).join('')}</select></label>
+                    <div class="grid grid-cols-2 gap-space-md">
+                        <label class="flex flex-col gap-1"><span class="${cls.label}">Início *</span><input name="inicio" type="time" class="${cls.input}" value="${h?.inicio ?? '19:00'}" /></label>
+                        <label class="flex flex-col gap-1"><span class="${cls.label}">Fim *</span><input name="fim" type="time" class="${cls.input}" value="${h?.fim ?? '20:30'}" /></label>
+                    </div>
+                    ${h ? '' : `<label class="flex items-center gap-space-sm p-space-sm bg-surface-container-low rounded-lg cursor-pointer"><input type="checkbox" name="semana" class="w-4 h-4 accent-[#006c49]" />
+                        <span class="font-body-sm text-body-sm">Criar o mesmo horário de segunda a sexta</span></label>`}
+                </form>`,
+                rodape: `<button type="button" data-cancelar class="${cls.btnNeutro}">Cancelar</button><button type="button" id="salvar" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">save</span>Salvar</button>`,
+            });
+            $('[data-cancelar]', el).onclick = () => App.drawer.fechar();
+            $('#salvar', el).onclick = (ev) => App.acao(ev.currentTarget, async () => {
+                const f = $('#f', el);
+                const base = { dia: Number(f.dia.value), inicio: f.inicio.value, fim: f.fim.value };
+                if (h) {
+                    await api('PUT', `/api/horarios/${h.id}`, base);
+                } else if (f.semana?.checked) {
+                    const erros = [];
+                    for (const dia of [1, 2, 3, 4, 5]) await api('POST', '/api/horarios', { ...base, dia }).catch((e) => erros.push(`${DIAS[dia]}: ${e.message}`));
+                    if (erros.length) App.toast(erros.join(' '), 'aviso');
+                } else {
+                    await api('POST', '/api/horarios', base);
+                }
+                App.drawer.fechar();
+                await App.recarregar();
+                App.toast('Horários atualizados.');
+            });
+        }
+
+        App.start({ ativo: 'turmas.html', render });
+    </script>
+</body>
+
+</html>

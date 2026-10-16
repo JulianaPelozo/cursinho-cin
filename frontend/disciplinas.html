@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Disciplinas & Cargas · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <section class="flex flex-col gap-space-lg">
+                <div id="cabecalho"></div>
+                <div id="capacidade" class="grid grid-cols-1 md:grid-cols-2 gap-space-md"></div>
+            </section>
+
+            <!-- Demanda x alocação (RF05, RF10) -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+                    <div class="flex items-center gap-space-xs">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Demanda semanal por disciplina</span>
+                        <span id="contagem" class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm font-semibold"></span>
+                    </div>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">Altere "aulas/semana" direto na tabela — vale para cada turma.</span>
+                </div>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead id="cabTabela"></thead>
+                        <tbody id="linhas" class="divide-y divide-surface-container font-body-md text-body-md text-on-surface"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const { esc, cls, $, $$, api } = App;
+
+        function corBarra(alocadas, demanda, cobertas) {
+            if (alocadas < demanda) return ['bg-warning', 'text-warning', 'Faltando'];
+            if (alocadas > demanda) return ['bg-tertiary-container', 'text-tertiary-container', 'Acima'];
+            if (cobertas < alocadas) return ['bg-error', 'text-error', 'Com pendência'];
+            return ['bg-secondary', 'text-secondary', 'Completa'];
+        }
+
+        function render(e) {
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'MÓDULO 02 • DEMANDA',
+                titulo: 'Disciplinas & Cargas',
+                descricao: 'Defina quantas aulas por semana cada disciplina precisa em cada turma e compare com o que já está na grade (RF05, RF10).',
+                acoes: `<button type="button" id="nova" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">add</span>Nova disciplina</button>`,
+            });
+            $('#nova').onclick = () => abrirDisciplina(null);
+
+            const demanda = e.disciplinas.reduce((s, d) => s + d.aulas_semanais, 0);
+            const slots = e.horarios.length;
+            $('#capacidade').innerHTML = `
+                <div class="${cls.card} p-space-md flex items-start gap-space-md">
+                    <div class="w-11 h-11 rounded-xl ${demanda > slots ? 'bg-error-container text-error' : 'bg-primary-fixed text-primary'} flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">${demanda > slots ? 'event_busy' : 'event_available'}</span></div>
+                    <div class="flex flex-col gap-space-xs flex-1">
+                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Capacidade por turma</span>
+                        <span class="font-headline-md text-headline-md text-on-surface">${demanda} aulas pedidas · ${slots} horários na semana</span>
+                        <span class="font-body-sm text-body-sm ${demanda > slots ? 'text-error' : 'text-on-surface-variant'}">${demanda > slots
+                            ? `Faltam ${demanda - slots} horário(s) — reduza a demanda ou crie horários em Turmas & Horários.`
+                            : demanda === slots ? 'A demanda ocupa exatamente todos os horários.' : `Sobram ${slots - demanda} horário(s) livres por turma.`}</span>
+                        <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-1"><div class="${demanda > slots ? 'bg-error' : 'bg-secondary'} h-full rounded-full" style="width:${slots ? Math.min(100, Math.round(demanda / slots * 100)) : 100}%"></div></div>
+                    </div>
+                </div>
+                <div class="${cls.card} p-space-md flex items-start gap-space-md">
+                    <div class="w-11 h-11 rounded-xl bg-surface-container-high text-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined">school</span></div>
+                    <div class="flex flex-col gap-space-xs">
+                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Demanda total do cursinho</span>
+                        <span class="font-headline-md text-headline-md text-on-surface">${e.indicadores.demanda_total} aulas/semana em ${e.turmas.length} turma(s)</span>
+                        <span class="font-body-sm text-body-sm text-on-surface-variant">${e.indicadores.na_grade} na grade · ${e.indicadores.cobertas} garantidas · ${e.indicadores.faltando} faltando</span>
+                    </div>
+                </div>`;
+
+            $('#contagem').textContent = `${e.disciplinas.length} disciplinas`;
+            $('#cabTabela').innerHTML = `<tr class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                <th class="${cls.th}">Disciplina</th><th class="${cls.th}">Aulas/semana</th><th class="${cls.th}">Duração</th><th class="${cls.th}">Quem leciona</th>
+                ${e.turmas.map((t) => `<th class="${cls.th}">${esc(t.nome)}<span class="block normal-case tracking-normal font-normal">na grade / pedidas</span></th>`).join('')}
+                <th class="${cls.th} text-right">Ações</th></tr>`;
+
+            if (!e.disciplinas.length) {
+                $('#linhas').innerHTML = `<tr><td colspan="${5 + e.turmas.length}">${App.vazio('Nenhuma disciplina cadastrada ainda.', 'menu_book')}</td></tr>`;
+                return;
+            }
+            $('#linhas').innerHTML = e.disciplinas.map((d) => {
+                const hab = d.habilitados.map((id) => e.mapa.vol.get(id));
+                return `<tr class="hover:bg-surface-container-low/60 transition-colors" data-id="${d.id}">
+                    <td class="py-space-md px-space-md"><span class="font-title-md text-title-md text-on-surface font-semibold">${esc(d.nome)}</span></td>
+                    <td class="py-space-md px-space-md">
+                        <input type="number" min="0" max="40" value="${d.aulas_semanais}" data-demanda aria-label="Aulas por semana de ${esc(d.nome)}"
+                            class="w-20 h-9 px-space-sm bg-surface-container-low rounded-lg font-title-md text-title-md text-primary font-bold text-center focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" /></td>
+                    <td class="py-space-md px-space-md font-body-sm text-body-sm text-on-surface-variant">${d.duracao_min ? `${d.duracao_min} min` : '—'}</td>
+                    <td class="py-space-md px-space-md">
+                        ${hab.length ? `<div class="flex items-center gap-space-xs" title="${esc(hab.map((v) => v.nome).join(', '))}">
+                            <div class="flex -space-x-2">${hab.slice(0, 4).map((v) => App.avatar(v, 'w-7 h-7 ring-2 ring-surface-container-lowest !text-[11px]')).join('')}</div>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant">${hab.length} ativo(s)</span></div>`
+                        : '<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">Ninguém leciona</span>'}
+                    </td>
+                    ${d.por_turma.map((p) => {
+                        const [barra, texto, rotulo] = corBarra(p.alocadas, d.aulas_semanais, p.cobertas);
+                        const pct = d.aulas_semanais ? Math.min(100, Math.round(p.alocadas / d.aulas_semanais * 100)) : (p.alocadas ? 100 : 0);
+                        return `<td class="py-space-md px-space-md"><div class="flex flex-col gap-1 w-32">
+                            <div class="flex justify-between font-label-sm text-label-sm"><span class="${texto} font-semibold">${p.alocadas} / ${d.aulas_semanais}</span><span class="text-on-surface-variant">${rotulo}</span></div>
+                            <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden"><div class="${barra} h-full rounded-full" style="width:${pct}%"></div></div>
+                            <span class="font-label-sm text-label-sm text-on-surface-variant">${p.cobertas} com professor</span></div></td>`;
+                    }).join('')}
+                    <td class="py-space-md px-space-md text-right"><div class="flex items-center justify-end gap-1">
+                        <button type="button" class="${cls.btnIcone}" data-acao="editar" title="Editar"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                        <button type="button" class="${cls.btnIcone} hover:!text-error" data-acao="excluir" title="Excluir"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                    </div></td>
+                </tr>`;
+            }).join('');
+        }
+
+        $('#linhas').addEventListener('click', (ev) => {
+            const b = ev.target.closest('[data-acao]');
+            if (!b) return;
+            const d = App.estado.mapa.disc.get(Number(b.closest('tr').dataset.id));
+            if (b.dataset.acao === 'editar') abrirDisciplina(d);
+            else excluir(d, b);
+        });
+        $('#linhas').addEventListener('change', (ev) => {
+            if (!ev.target.matches('[data-demanda]')) return;
+            const d = App.estado.mapa.disc.get(Number(ev.target.closest('tr').dataset.id));
+            App.acao(ev.target, async () => {
+                try {
+                    await api('PUT', `/api/disciplinas/${d.id}`, { nome: d.nome, aulas_semanais: Number(ev.target.value), duracao_min: d.duracao_min });
+                    App.toast(`Demanda de ${d.nome} atualizada.`);
+                } finally {
+                    await App.recarregar();
+                }
+            });
+        });
+
+        async function excluir(d, botao) {
+            const ok = await App.confirmar({ titulo: `Excluir ${d.nome}?`, perigo: true, icone: 'delete', confirmar: 'Excluir', mensagem: 'A disciplina também sai das fichas dos voluntários. Só é possível excluir se ela não estiver em nenhuma aula da grade.' });
+            if (!ok) return;
+            await App.acao(botao, async () => {
+                await api('DELETE', `/api/disciplinas/${d.id}`);
+                await App.recarregar();
+                App.toast('Disciplina excluída.');
+            });
+        }
+
+        function abrirDisciplina(d) {
+            const e = App.estado;
+            const hab = d ? d.habilitados.map((id) => e.mapa.vol.get(id)) : [];
+            const el = App.drawer.abrir({
+                icone: 'menu_book', titulo: d ? d.nome : 'Nova disciplina', subtitulo: 'Cadastro e demanda semanal (RF02, RF05)', largura: 'max-w-lg',
+                corpo: `<form id="f" class="flex flex-col gap-space-md" novalidate>
+                    <label class="flex flex-col gap-1"><span class="${cls.label}">Nome *</span><input name="nome" maxlength="80" class="${cls.input}" value="${esc(d?.nome)}" /></label>
+                    <div class="grid grid-cols-2 gap-space-md">
+                        <label class="flex flex-col gap-1"><span class="${cls.label}">Aulas por semana (em cada turma) *</span><input name="aulas_semanais" type="number" min="0" max="40" class="${cls.input}" value="${d?.aulas_semanais ?? 1}" /></label>
+                        <label class="flex flex-col gap-1"><span class="${cls.label}">Duração de cada aula (min)</span><input name="duracao_min" type="number" min="10" max="600" placeholder="opcional" class="${cls.input}" value="${d?.duracao_min ?? ''}" /></label>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">A duração é opcional. Se informada, o sistema avisa quando a aula cair num horário mais curto.</p>
+                    ${d ? `<div class="flex flex-col gap-space-xs p-space-md bg-surface-container-low rounded-xl">
+                        <span class="${cls.label}">Voluntários ativos que lecionam (${hab.length})</span>
+                        ${hab.length ? `<div class="flex flex-wrap gap-1">${hab.map((v) => `<a href="index.html?voluntario=${v.id}" class="px-2 py-0.5 rounded bg-surface-container-lowest hover:bg-primary-fixed font-label-md text-label-md">${esc(v.nome)}</a>`).join('')}</div>`
+                        : '<span class="font-body-sm text-body-sm text-error">Ninguém ativo leciona esta disciplina.</span>'}
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Para habilitar alguém, edite a ficha do voluntário.</span>
+                    </div>` : ''}
+                </form>`,
+                rodape: `<button type="button" data-cancelar class="${cls.btnNeutro}">Cancelar</button>
+                    <button type="button" id="salvar" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">save</span>Salvar</button>`,
+            });
+            $('[data-cancelar]', el).onclick = () => App.drawer.fechar();
+            $('#salvar', el).onclick = (ev) => App.acao(ev.currentTarget, async () => {
+                const f = $('#f', el);
+                const corpo = { nome: f.nome.value, aulas_semanais: f.aulas_semanais.value, duracao_min: f.duracao_min.value || null };
+                if (d) await api('PUT', `/api/disciplinas/${d.id}`, corpo);
+                else await api('POST', '/api/disciplinas', corpo);
+                App.drawer.fechar();
+                await App.recarregar();
+                App.toast(d ? 'Disciplina atualizada.' : 'Disciplina cadastrada.');
+            });
+        }
+
+        App.start({ ativo: 'disciplinas.html', render });
+    </script>
+</body>
+
+</html>
