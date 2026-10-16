@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Exportar Grade · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/icone.svg" rel="icon" type="image/svg+xml" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <div id="cabecalho" class="no-print"></div>
+
+            <section class="no-print bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+                <div class="flex items-center flex-wrap gap-space-sm">
+                    <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1"><span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Turma:</span>
+                        <select id="fTurma" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select></label>
+                    <label class="flex items-center gap-space-xs bg-surface-container-low rounded-lg px-space-sm py-2 cursor-pointer">
+                        <input type="checkbox" id="mostrarProf" checked class="w-4 h-4 accent-[#006c49]" /><span class="font-body-sm text-body-sm">Mostrar professores</span></label>
+                    <label class="flex items-center gap-space-xs bg-surface-container-low rounded-lg px-space-sm py-2 cursor-pointer">
+                        <input type="checkbox" id="mostrarSit" class="w-4 h-4 accent-[#006c49]" /><span class="font-body-sm text-body-sm">Destacar pendências</span></label>
+                </div>
+                <div class="flex items-center gap-space-sm flex-wrap">
+                    <a id="baixarCsv" class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-surface-container-lowest text-on-surface font-title-md text-title-md rounded-lg shadow-sm hover:bg-surface-container transition-all" href="/api/exportar.csv">
+                        <span class="material-symbols-outlined text-[18px] text-on-surface-variant">table_view</span>Baixar planilha (CSV)</a>
+                    <button type="button" id="imprimir" class="inline-flex items-center gap-space-xs px-space-md py-space-sm bg-primary-container hover:bg-primary text-on-primary font-title-md text-title-md rounded-lg shadow-md transition-all">
+                        <span class="material-symbols-outlined text-[18px]">print</span>Imprimir / salvar PDF</button>
+                </div>
+            </section>
+
+            <div id="previa" class="flex flex-col gap-space-xl"></div>
+        </div>
+    </main>
+
+    <script>
+        const { esc, $, DIAS_LONGOS } = App;
+        let turmaSel = App.params.get('turma') || 'todas';
+
+        function render(e) {
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'COMPARTILHAMENTO • RF20',
+                titulo: 'Exportar Grade',
+                descricao: 'Gere a grade semanal para imprimir, salvar em PDF ou abrir na planilha. Ideal para mandar no grupo dos voluntários e afixar no mural.',
+            });
+            const fT = $('#fTurma');
+            fT.innerHTML = '<option value="todas">Todas as turmas</option>' + App.opcoes(e.turmas, turmaSel);
+            fT.value = turmaSel;
+            if (!fT.value) fT.value = 'todas';
+            renderPrevia();
+        }
+
+        function renderPrevia() {
+            const e = App.estado;
+            turmaSel = $('#fTurma').value;
+            $('#baixarCsv').href = `/api/exportar.csv${turmaSel === 'todas' ? '' : `?turma_id=${turmaSel}`}`;
+            const prof = $('#mostrarProf').checked, sit = $('#mostrarSit').checked;
+            const turmas = turmaSel === 'todas' ? e.turmas : e.turmas.filter((t) => t.id === Number(turmaSel));
+            const { dias, linhas, celula } = App.estrutura(e);
+            const hoje = new Date().toLocaleDateString('pt-BR');
+
+            $('#previa').innerHTML = turmas.map((t, idx) => `
+                <article class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-md ${idx < turmas.length - 1 ? 'quebra-pagina' : ''}">
+                    <header class="flex items-end justify-between gap-space-md border-b-2 border-primary pb-space-sm">
+                        <div class="flex flex-col">
+                            <span class="font-code-sm text-code-sm text-secondary tracking-wide">CURSINHO POPULAR · GRADE SOLIDÁRIA</span>
+                            <h2 class="font-display-lg text-display-lg text-primary">${esc(t.nome)}${t.descricao ? ` <span class="font-headline-md text-headline-md text-on-surface-variant">— ${esc(t.descricao)}</span>` : ''}</h2>
+                        </div>
+                        <div class="text-right font-label-md text-label-md text-on-surface-variant">Período ${esc(t.periodo)}<br>Gerado em ${hoje}</div>
+                    </header>
+                    <table class="w-full border-collapse table-fixed">
+                        <thead><tr>
+                            <th class="w-24 p-space-xs"></th>
+                            ${dias.map((d) => `<th class="p-space-xs bg-primary-container text-on-primary font-title-md text-title-md border border-primary-container">${DIAS_LONGOS[d]}</th>`).join('')}
+                        </tr></thead>
+                        <tbody>
+                        ${Array.from({ length: linhas }, (_, k) => k + 1).map((ordem) => `<tr>
+                            <th class="p-space-xs bg-surface-container-low border border-outline-variant font-label-md text-label-md text-on-surface-variant">${ordem}ª aula</th>
+                            ${dias.map((d) => {
+                                const h = celula(d, ordem);
+                                if (!h) return '<td class="border border-outline-variant bg-surface-container/40"></td>';
+                                const a = e.aulaEm(t.id, h.id);
+                                const fundo = sit && a && a.status !== 'coberta' ? (a.status === 'conflito' ? 'bg-error-container/60' : 'bg-warning-container/70') : '';
+                                return `<td class="border border-outline-variant p-space-sm align-top h-20 ${fundo}">
+                                    <div class="font-code-sm text-code-sm text-on-surface-variant">${h.inicio}–${h.fim}</div>
+                                    ${a ? `<div class="font-title-md text-title-md text-on-surface">${esc(e.mapa.disc.get(a.disciplina_id).nome)}</div>
+                                        ${prof ? `<div class="font-body-sm text-body-sm text-on-surface-variant">${a.voluntario_id ? esc(e.mapa.vol.get(a.voluntario_id).nome) : '<em>a definir</em>'}</div>` : ''}
+                                        ${sit && a.status !== 'coberta' ? `<div class="font-label-sm text-label-sm font-semibold ${a.status === 'conflito' ? 'text-error' : 'text-warning'}">${App.STATUS[a.status].rotulo}</div>` : ''}`
+                                    : '<div class="font-body-sm text-body-sm text-outline">—</div>'}
+                                </td>`;
+                            }).join('')}
+                        </tr>`).join('')}
+                        </tbody>
+                    </table>
+                    <footer class="font-label-sm text-label-sm text-on-surface-variant flex justify-between flex-wrap gap-space-sm">
+                        <span>${t.cobertas} de ${t.demanda} aulas com professor confirmado</span>
+                        <span>Dúvidas e trocas: falar com a coordenação</span>
+                    </footer>
+                </article>`).join('') || App.vazio('Nenhuma turma para exportar.', 'meeting_room');
+        }
+
+        $('#fTurma').addEventListener('input', renderPrevia);
+        $('#mostrarProf').addEventListener('input', renderPrevia);
+        $('#mostrarSit').addEventListener('input', renderPrevia);
+        $('#imprimir').onclick = () => window.print();
+        App.start({ ativo: 'exportar.html', render });
+    </script>
+</body>
+
+</html>

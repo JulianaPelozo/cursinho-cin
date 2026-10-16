@@ -1,7 +1,5 @@
 'use strict';
-// Regras de negócio da grade (RN01–RN09) e montagem do estado consolidado.
-// Tudo é calculado em memória a partir de uma "foto" do banco: o volume de um
-// cursinho (dezenas de voluntários, centenas de aulas) torna isso instantâneo.
+
 
 const DIAS = ['', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
@@ -45,10 +43,7 @@ function carregar(db) {
   };
 }
 
-/**
- * Verifica se um voluntário pode assumir uma aula (disciplina + horário).
- * impedimentos = desrespeitam regras de negócio; avisos = alertas de equilíbrio.
- */
+
 function avaliar(ctx, { voluntarioId, disciplinaId, horarioId, ignorarAulaId = null }) {
   const v = ctx.vol.get(voluntarioId);
   const h = ctx.hor.get(horarioId);
@@ -95,7 +90,6 @@ function situacaoCarga(v, carga) {
   return 'equilibrada';
 }
 
-/** Lista todos os voluntários, do mais indicado ao menos indicado, para uma aula. */
 function candidatos(ctx, { disciplinaId, horarioId, ignorarAulaId = null }) {
   const aula = ignorarAulaId != null ? ctx.aula.get(ignorarAulaId) : null;
   const rank = (c) => (c.elegivel ? (c.avisos.length ? 1 : 0) : c.ativo ? 2 : 3);
@@ -157,7 +151,6 @@ function montarEstado(ctx) {
     conflitos: contar((a) => a.turma_id === t.id && a.status === 'conflito'),
   }));
 
-  // Alertas (RF11)
   const alertas = [];
   const local = (a) => `${ctx.turma.get(a.turma_id).nome} · ${ctx.hor.get(a.horario_id).rotulo}`;
   for (const a of aulas.filter((x) => x.status === 'conflito')) {

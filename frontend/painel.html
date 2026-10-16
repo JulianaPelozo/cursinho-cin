@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Painel de Situação · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/icone.svg" rel="icon" type="image/svg+xml" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <section class="flex flex-col gap-space-lg">
+                <div id="cabecalho"></div>
+                <!-- Indicadores (RF18) -->
+                <div id="kpis" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-space-md"></div>
+            </section>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-space-lg items-start">
+                <section class="xl:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between gap-space-sm">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Situação das aulas por turma</span>
+                        <div class="flex items-center gap-space-md flex-wrap font-label-md text-label-md text-on-surface-variant">
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-secondary"></span>Garantidas</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-error"></span>Conflito</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-warning"></span>Sem professor</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-surface-container-highest"></span>Faltando na grade</span>
+                        </div>
+                    </div>
+                    <div id="turmas" class="p-space-lg flex flex-col gap-space-lg"></div>
+                </section>
+
+                <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+                        <span class="font-title-md text-title-md text-primary font-semibold">O que fazer agora</span>
+                        <a href="conflitos.html" class="font-label-md text-label-md text-primary hover:underline">Ver tudo</a>
+                    </div>
+                    <div id="agora" class="p-space-md flex flex-col gap-space-sm"></div>
+                </section>
+
+                <!-- Carga por voluntário (RF14, RF15) -->
+                <section class="xl:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+                        <div class="flex flex-col"><span class="font-title-md text-title-md text-primary font-semibold">Carga por voluntário</span>
+                            <span id="mediaTxt" class="font-body-sm text-body-sm text-on-surface-variant"></span></div>
+                        <div class="flex items-center gap-space-md flex-wrap font-label-md text-label-md text-on-surface-variant">
+                            <span class="flex items-center gap-1"><span class="w-0.5 h-3 bg-on-surface"></span>Limite individual</span>
+                            <span class="flex items-center gap-1"><span class="w-0.5 h-3 border-l-2 border-dashed border-tertiary-container"></span>Média</span>
+                        </div>
+                    </div>
+                    <div id="cargas" class="p-space-lg flex flex-col gap-space-sm"></div>
+                </section>
+
+                <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+                        <span class="font-title-md text-title-md text-primary font-semibold">Últimas alterações</span>
+                        <a href="historico.html" class="font-label-md text-label-md text-primary hover:underline">Histórico</a>
+                    </div>
+                    <ol id="ultimas" class="p-space-md flex flex-col gap-space-sm"></ol>
+                </section>
+            </div>
+
+            <!-- Demanda x alocação (RF10) -->
+            <section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+                    <span class="font-title-md text-title-md text-primary font-semibold">Demanda × aulas garantidas por disciplina (todas as turmas)</span>
+                    <a href="disciplinas.html" class="font-label-md text-label-md text-primary hover:underline">Ajustar demanda</a>
+                </div>
+                <div id="disciplinas" class="p-space-lg grid grid-cols-1 md:grid-cols-2 gap-x-space-2xl gap-y-space-md"></div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const { esc, cls, $, api } = App;
+
+        function render(e) {
+            const i = e.indicadores;
+            const hora = new Date().getHours();
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'MONITORAMENTO • VISÃO GERAL',
+                titulo: `${hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'}, ${esc(App.usuario.nome)}`,
+                descricao: i.conflitos + i.descobertas
+                    ? `A semana tem ${i.cobertas} de ${i.demanda_total} aulas garantidas. ${i.conflitos + i.descobertas} aula(s) precisam de atenção.`
+                    : `Todas as ${i.na_grade} aulas da grade têm professor válido.`,
+                acoes: `<a href="grade.html" class="${cls.btnPrim}"><span class="material-symbols-outlined text-[18px]">calendar_month</span>Montar grade</a>`,
+            });
+
+            $('#kpis').innerHTML = [
+                App.kpi({ rotulo: 'Aulas previstas', valor: i.demanda_total, unidade: 'por semana', icone: 'event_note', cor: 'text-primary',
+                    rodape: `<span class="font-label-sm text-label-sm text-on-surface-variant">${i.na_grade} já na grade · ${e.turmas.length} turma(s)</span>` }),
+                App.kpi({ rotulo: 'Cobertas', valor: i.cobertas, unidade: `${i.cobertura_pct}%`, icone: 'task_alt', cor: 'text-secondary',
+                    rodape: `<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden"><div class="bg-secondary h-full rounded-full" style="width:${i.cobertura_pct}%"></div></div>` }),
+                App.kpi({ rotulo: 'Sem professor', valor: i.descobertas, unidade: 'aulas', icone: 'person_off', cor: i.descobertas ? 'text-warning' : 'text-secondary' }),
+                App.kpi({ rotulo: 'Com conflito', valor: i.conflitos, unidade: 'aulas', icone: 'error', cor: i.conflitos ? 'text-error' : 'text-secondary' }),
+                App.kpi({ rotulo: 'Faltando na grade', valor: i.faltando, unidade: 'aulas', icone: 'playlist_add', cor: i.faltando ? 'text-tertiary-container' : 'text-secondary' }),
+            ].join('');
+
+            // Barras empilhadas por turma
+            $('#turmas').innerHTML = e.turmas.map((t) => {
+                const falt = Math.max(0, t.demanda - t.na_grade);
+                const total = Math.max(t.demanda, t.na_grade) || 1;
+                const seg = (n, cor, rot) => n ? `<div class="${cor} h-full flex items-center justify-center text-[11px] font-semibold" style="width:${n / total * 100}%" title="${rot}: ${n}">${n}</div>` : '';
+                return `<a href="grade.html?turma=${t.id}" class="flex flex-col gap-space-xs group">
+                    <div class="flex justify-between items-baseline gap-space-sm">
+                        <span class="font-title-md text-title-md text-on-surface group-hover:text-primary">${esc(t.nome)} <span class="font-label-sm text-label-sm text-on-surface-variant">${esc(t.descricao || '')}</span></span>
+                        <span class="font-label-md text-label-md text-on-surface-variant">${t.cobertas} de ${t.demanda} garantidas</span>
+                    </div>
+                    <div class="w-full h-7 rounded-lg overflow-hidden flex bg-surface-container">
+                        ${seg(t.cobertas, 'bg-secondary text-on-secondary', 'Garantidas')}${seg(t.conflitos, 'bg-error text-on-error', 'Conflito')}
+                        ${seg(t.descobertas, 'bg-warning text-white', 'Sem professor')}${seg(falt, 'bg-surface-container-highest text-on-surface-variant', 'Faltando')}
+                    </div></a>`;
+            }).join('') || App.vazio('Nenhuma turma cadastrada.', 'meeting_room');
+
+            // Próximas ações
+            const prioridade = { conflito: 0, descoberta: 1, capacidade: 2, demanda: 3, sobrecarga: 4 };
+            const acoes = e.alertas.filter((x) => x.tipo in prioridade).sort((a, b) => prioridade[a.tipo] - prioridade[b.tipo]).slice(0, 5);
+            const icone = { conflito: ['error', 'text-error'], descoberta: ['person_off', 'text-warning'], capacidade: ['event_busy', 'text-error'], demanda: ['playlist_add', 'text-tertiary-container'], sobrecarga: ['crisis_alert', 'text-error'] };
+            const link = (x) => x.aula_id ? (x.tipo === 'descoberta' ? `substituicoes.html?aula=${x.aula_id}` : `grade.html?aula=${x.aula_id}`)
+                : x.voluntario_id ? `substituicoes.html?voluntario=${x.voluntario_id}` : `grade.html?turma=${x.turma_id}`;
+            $('#agora').innerHTML = acoes.map((x) => `
+                <a href="${link(x)}" class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+                    <span class="material-symbols-outlined text-[20px] ${icone[x.tipo][1]}">${icone[x.tipo][0]}</span>
+                    <div class="flex flex-col"><span class="font-code-sm text-code-sm text-on-surface-variant">${esc(x.titulo)}</span>
+                        <span class="font-body-sm text-body-sm text-on-surface">${esc(x.msg)}</span></div>
+                </a>`).join('') || App.vazio('Nada pendente. Grade fechada, aula garantida!', 'verified');
+
+            // Carga por voluntário
+            const ativos = e.voluntarios.filter((v) => v.ativo).sort((a, b) => b.carga - a.carga || a.nome.localeCompare(b.nome));
+            const escala = Math.max(1, ...ativos.map((v) => Math.max(v.carga, v.limite_aulas)));
+            $('#mediaTxt').textContent = `Média de ${String(i.carga_media).replace('.', ',')} aulas por voluntário ativo.`;
+            $('#cargas').innerHTML = ativos.map((v) => {
+                const c = App.CARGA[v.situacao_carga];
+                return `<a href="index.html?voluntario=${v.id}" class="grid grid-cols-[minmax(110px,180px)_1fr_auto] items-center gap-space-md group">
+                    <span class="font-body-md text-body-md text-on-surface truncate group-hover:text-primary">${esc(v.nome)}</span>
+                    <div class="relative h-5 bg-surface-container rounded">
+                        <div class="${c.barra} h-full rounded" style="width:${v.carga / escala * 100}%"></div>
+                        <div class="absolute top-[-3px] bottom-[-3px] w-0.5 bg-on-surface" style="left:${v.limite_aulas / escala * 100}%" title="Limite: ${v.limite_aulas}"></div>
+                        <div class="absolute top-[-3px] bottom-[-3px] border-l-2 border-dashed border-tertiary-container" style="left:${i.carga_media / escala * 100}%"></div>
+                    </div>
+                    <span class="font-label-md text-label-md ${c.texto} font-semibold w-28 text-right">${v.carga}/${v.limite_aulas} · ${c.rotulo}</span>
+                </a>`;
+            }).join('') || App.vazio('Nenhum voluntário ativo.', 'group');
+
+            // Demanda por disciplina
+            $('#disciplinas').innerHTML = e.disciplinas.map((d) => {
+                const demanda = d.aulas_semanais * e.turmas.length;
+                const alocadas = d.por_turma.reduce((s, p) => s + p.alocadas, 0);
+                const cobertas = d.por_turma.reduce((s, p) => s + p.cobertas, 0);
+                const base = Math.max(demanda, alocadas) || 1;
+                return `<div class="flex flex-col gap-1">
+                    <div class="flex justify-between font-body-sm text-body-sm"><span class="font-semibold text-on-surface">${esc(d.nome)}</span>
+                        <span class="${cobertas < demanda ? 'text-warning font-semibold' : 'text-secondary'}">${cobertas} de ${demanda} garantidas${alocadas > demanda ? ` · ${alocadas - demanda} acima` : ''}</span></div>
+                    <div class="relative h-2.5 bg-surface-container rounded-full overflow-hidden">
+                        <div class="absolute inset-y-0 left-0 bg-primary-fixed-dim" style="width:${alocadas / base * 100}%"></div>
+                        <div class="absolute inset-y-0 left-0 bg-secondary" style="width:${cobertas / base * 100}%"></div>
+                    </div></div>`;
+            }).join('');
+
+            api('GET', '/api/historico?limite=6').then((h) => {
+                $('#ultimas').innerHTML = h.map((x) => `<li class="flex flex-col gap-0.5 p-space-sm rounded-lg bg-surface-container-low">
+                    <span class="font-code-sm text-code-sm text-on-surface-variant">${App.dataHora(x.data)}</span>
+                    <span class="font-body-sm text-body-sm text-on-surface">${esc(x.descricao)}</span>
+                    ${x.valor_anterior || x.valor_novo ? `<span class="font-label-sm text-label-sm text-on-surface-variant">${esc(x.valor_anterior || '—')} → ${esc(x.valor_novo || '—')}</span>` : ''}</li>`).join('')
+                    || App.vazio('Nenhuma alteração registrada.', 'history');
+            }).catch(() => { });
+        }
+
+        App.start({ ativo: 'painel.html', render });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Histórico de Trocas · Grade Solidária</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="assets/icone.svg" rel="icon" type="image/svg+xml" />
+    <link href="assets/estilo.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+    <main>
+        <div class="flex flex-col w-full gap-space-xl">
+            <div id="cabecalho"></div>
+
+            <section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+                <div class="relative flex-1 min-w-[240px]">
+                    <span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                    <input id="busca" type="search" placeholder="Buscar por turma, disciplina ou voluntário..."
+                        class="w-full h-10 pl-10 pr-space-md bg-surface-container-low rounded-lg font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" />
+                </div>
+                <label class="flex items-center bg-surface-container-low rounded-lg px-space-sm py-1">
+                    <span class="font-label-sm text-label-sm text-on-surface-variant mr-1.5">Tipo:</span>
+                    <select id="fTipo" class="bg-transparent font-title-md text-title-md text-on-surface focus:outline-none py-1 cursor-pointer"></select>
+                </label>
+            </section>
+
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <div class="px-space-lg py-space-md bg-surface-container-low flex items-center gap-space-xs">
+                    <span class="font-title-md text-title-md text-primary font-semibold">Registro de alterações</span>
+                    <span id="contagem" class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-code-sm text-code-sm font-semibold"></span>
+                </div>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+                                <th class="py-space-sm px-space-md">Quando</th>
+                                <th class="py-space-sm px-space-md">Tipo</th>
+                                <th class="py-space-sm px-space-md">Alteração</th>
+                                <th class="py-space-sm px-space-md">Antes → Depois</th>
+                                <th class="py-space-sm px-space-md">Por</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linhas" class="divide-y divide-surface-container font-body-md text-body-md"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const { esc, $, api } = App;
+        const TIPOS = {
+            alocacao: ['Nova aula', 'add_circle', 'bg-primary-fixed text-primary'],
+            troca: ['Troca de professor', 'swap_horiz', 'bg-tertiary-fixed text-on-tertiary-fixed'],
+            substituicao: ['Substituição', 'published_with_changes', 'bg-primary-fixed text-primary'],
+            alteracao: ['Aula alterada', 'edit_calendar', 'bg-tertiary-fixed text-on-tertiary-fixed'],
+            remocao: ['Remoção', 'remove_circle', 'bg-warning-container text-on-warning-container'],
+            horario: ['Horário', 'schedule', 'bg-surface-container-high text-on-surface'],
+            voluntario: ['Situação do voluntário', 'manage_accounts', 'bg-error-container text-on-error-container'],
+            cadastro: ['Cadastro', 'edit_note', 'bg-surface-container-high text-on-surface'],
+        };
+        let registros = [];
+
+        function render() {
+            $('#cabecalho').innerHTML = App.cabecalho({
+                modulo: 'AUDITORIA • RF17',
+                titulo: 'Histórico de Trocas',
+                descricao: 'Toda alteração importante na grade fica registrada: trocas de professor, substituições, aulas criadas ou removidas, mudanças de horário e saídas de voluntários.',
+            });
+            api('GET', '/api/historico?limite=1000').then((h) => {
+                registros = h;
+                const fT = $('#fTipo');
+                const atual = fT.value || 'todos';
+                fT.innerHTML = '<option value="todos">Todos</option>' + Object.entries(TIPOS).map(([k, [r]]) => `<option value="${k}">${r}</option>`).join('');
+                fT.value = atual;
+                renderLinhas();
+            }).catch((e) => App.toast(e.message, 'erro'));
+        }
+
+        function renderLinhas() {
+            const termo = $('#busca').value.trim().toLowerCase();
+            const tipo = $('#fTipo').value;
+            const lista = registros.filter((r) => (tipo === 'todos' || r.tipo === tipo) &&
+                (!termo || [r.descricao, r.valor_anterior, r.valor_novo, r.usuario].some((c) => String(c || '').toLowerCase().includes(termo))));
+            $('#contagem').textContent = `${lista.length} registro(s)`;
+            $('#linhas').innerHTML = lista.map((r) => {
+                const [rot, ic, cor] = TIPOS[r.tipo] || [r.tipo, 'info', 'bg-surface-container'];
+                return `<tr class="hover:bg-surface-container-low/60">
+                    <td class="py-space-sm px-space-md font-code-sm text-code-sm text-on-surface-variant whitespace-nowrap">${App.dataHora(r.data)}</td>
+                    <td class="py-space-sm px-space-md"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${cor} font-label-sm text-label-sm font-semibold whitespace-nowrap"><span class="material-symbols-outlined text-[14px]">${ic}</span>${rot}</span></td>
+                    <td class="py-space-sm px-space-md">${esc(r.descricao)}</td>
+                    <td class="py-space-sm px-space-md font-body-sm text-body-sm">${r.valor_anterior || r.valor_novo
+                        ? `<span class="text-on-surface-variant line-through decoration-outline-variant">${esc(r.valor_anterior || '—')}</span> <span class="material-symbols-outlined text-[14px] align-middle text-outline">arrow_forward</span> <span class="text-on-surface font-medium">${esc(r.valor_novo || '—')}</span>` : '—'}</td>
+                    <td class="py-space-sm px-space-md font-body-sm text-body-sm text-on-surface-variant">${esc(r.usuario || 'sistema')}</td>
+                </tr>`;
+            }).join('') || `<tr><td colspan="5">${App.vazio('Nenhum registro encontrado.', 'history')}</td></tr>`;
+        }
+
+        $('#busca').addEventListener('input', renderLinhas);
+        $('#fTipo').addEventListener('input', renderLinhas);
+        App.start({ ativo: 'historico.html', render });
+    </script>
+</body>
+
+</html>
